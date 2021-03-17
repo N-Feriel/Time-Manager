@@ -32,20 +32,24 @@ const getUserGMInfo = async(req, res)=>{
 const createUserGMInfo = async(req, res)=>{
 
     const schema = Joi.object({ 
-        first_name: Joi.string() .min(6) .required(),
-        last_name: Joi.string() .min(6) .required(),
+        first_name: Joi.string() .min(4) .required(),
+        last_name: Joi.string() .min(4) .required(),
         email: Joi.string() .min(6) .required() .email(),
-        phone: Joi.string(),
         address:  Joi.object({
             city: Joi.string(),
             street: Joi.string(),
             zipCode: Joi.string(),
+            state: Joi.string(),
+
         }),
+        phone: Joi.string(),
+        origin: Joi.string(),
         languages: Joi.array().items(Joi.string()),
         training: Joi.array(),
         isAdmin: Joi.boolean(),
+        isActif: Joi.boolean(),
         isMember: Joi.boolean(),
-
+        startDate: Joi.string()
     });
 
     const {error} = schema.validate(req.body)
@@ -73,6 +77,7 @@ const updateUserGMInfo = async(req, res) =>{
     const update = {...req.body}
     delete update._id;
 
+    console.log(req.body)
     const opts = {new: true,
         timestamps:{createdAt:false, updatedAt:true}};
 
@@ -99,17 +104,19 @@ const getUsersGDInfo = async(req, res)=>{
 
     const infoUsers = await InfoGD.find();
 
+
     if(!infoUsers) return res.status(400).json({ status: 400, message:"can't find Users in dataBase"})
     
-    res.status(201).json({ status: 201, data: infoUsers}); 
+    res.status(201).json({ status: 200, data: infoUsers}); 
 
 }
 
 const getUserGDInfo = async(req, res)=>{
 
     const _id = req.params.userId;
-
     const userInfo = await InfoGD.findById(_id);
+
+    
 
     if(!userInfo) return res.status(404).json({ status: 404, message:"The user with the given Id is not found!"});
 
@@ -120,14 +127,15 @@ const getUserGDInfo = async(req, res)=>{
 const createUserGDInfo = async(req, res)=>{
 
     const schema = Joi.object({ 
-        first_name: Joi.string() .min(6) .required(),
-        last_name: Joi.string() .min(6) .required(),
+        first_name: Joi.string() .min(4) .required(),
+        last_name: Joi.string() .min(4) .required(),
         email: Joi.string() .min(6) .required() .email(),
         phone: Joi.string(),
         address:  Joi.object({
             city: Joi.string(),
             street: Joi.string(),
             zipCode: Joi.string(),
+            state: Joi.string(),
         }),
         infoParent: Joi.object(
             {name: Joi.string()},
@@ -138,6 +146,7 @@ const createUserGDInfo = async(req, res)=>{
             {isAssign: Joi.boolean()}
         ),
         isActif: Joi.boolean(),
+        origin: Joi.string(),
         isMember: Joi.boolean(),
         dueDate: Joi.date(),
     });

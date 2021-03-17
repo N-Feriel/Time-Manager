@@ -26,11 +26,12 @@ const getEvent = async(req, res)=>{
 }
 
 const schema = Joi.object({ name: Joi.string() .min(3) .required(),
-    participents: Joi.object({
+    type: Joi.string() .min(3) .required(),
+    participants: Joi.object({
         numberOfParticipants: Joi.number().required(),
-        participentsName: Joi.array(),
+        participantsName: Joi.array(),
     }),
-    date: Joi.date(),
+    eventDate: Joi.date(),
     time: Joi.number().required(),
 });
 
@@ -55,15 +56,10 @@ const createEvent = async(req, res)=>{
 }
 
 const updateEvent = async(req, res) =>{
-
-    const {error} = schema.validate(req.body)
-
-    if(error) return res.status(400).json({ status: 400, message: error.details[0].message}); 
-    
     const _id = req.params.eventId
 
     const update = {...req.body}
-    
+
     const opts = {new: true,
         timestamps:{createdAt:false, updatedAt:true}};
     

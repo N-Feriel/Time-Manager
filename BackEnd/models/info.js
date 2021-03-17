@@ -32,7 +32,7 @@ const infoSchema1 = new mongoose.Schema({
         type: String,
         validate: {
         validator: function(v) {
-            return /\d{3}-\d{4}-\d{4}/.test(v);
+            return /\d{3}-\d{3}-\d{4}/.test(v);
         },
         message: props => `${props.value} is not a valid phone number!`
         },
@@ -45,6 +45,10 @@ const infoSchema1 = new mongoose.Schema({
         default: false
     },
     isMember: {
+        type: Boolean,
+        default: false
+    },
+    isActif: {
         type: Boolean,
         default: false
     },
@@ -84,7 +88,7 @@ const infoSchema2 = new mongoose.Schema({
         type: String,
         validate: {
         validator: function(v) {
-            return /\d{3}-\d{4}-\d{4}/.test(v);
+            return /\d{3}-\d{3}-\d{4}/.test(v);
         },
         message: props => `${props.value} is not a valid phone number!`
         },
@@ -101,14 +105,18 @@ const infoSchema2 = new mongoose.Schema({
     },
     infoParent: {
         name: {type: String},
-        isContact: {type: Boolean, default: false},
+        isContact: {type: Boolean},
     },
     isMember: {
         type: Boolean,
         default: false
     },
+    isActif: {
+        type: Boolean,
+        default: false
+    },
     assignTo:{
-        isAssign: {type: Boolean, default: false},
+        isAssign: {type: mongoose.Schema.Types.ObjectId, ref: 'InfoGM'},
         assignGM: {type: String}
     },
 

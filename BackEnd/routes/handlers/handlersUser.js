@@ -50,28 +50,47 @@ const createUser = async(req, res)=>{
     const token = user.generateAuthToken();
 
     return res.header('x-auth-token', token)
+        .header("access-control-expose-headers", "x-auth-token")
         .status(201).json({ status: 201, data: _.pick(user, ['_id', 'name', 'email'])}); 
 }
 
 
 const authUser = async(req, res)=>{
+
+    console.log('req', req.body)
     
     const schema = Joi.object({ email: Joi.string() .min(6) .required() .email(),
         password: Joi.string() .min(6) .required()});
         
     const {error} = schema.validate(req.body)
+    
 
-    if(error) return res.status(400).json({ status: 400, message: error.details[0].message}); 
+    if (error) return res.status(400).json({
+        status: 400, 
+        message: error.details[0].message
+    })
 
     let user = await User.findOne({email: req.body.email})
 
-    if(!user) return res.status(400).json({ status: 400, message:"Invalid Email or Password"});
+    if (!user) return res.status(400).json({
+        status: 400, 
+        message: 'Invalid email or password.'
+    })
 
     const validPassword = await bcrypt.compare(req.body.password, user.password);
-    if(!validPassword) return res.status(400).json({ status: 400, message:"Invalid Email or Password"});
+    if (!validPassword) return res.status(400).json({
+        status: 400, 
+        message: 'Invalid email or password.'
+    })
 
     const token = user.generateAuthToken();
-    res.send(token)
+    // res.send(token)
+
+    res.status(200).json({
+        status: 200, 
+        data: token
+    })
+
 }
 
 

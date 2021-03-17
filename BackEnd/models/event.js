@@ -7,13 +7,17 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
-    participents: {
-            numberOfParticipants: {type: Number},
-            participentsName: [String]
+    type:{
+        type: String,
+        required: true
     },
 
-    date:{
+    participants: {
+        numberOfParticipants: {type: Number},
+        participantsName: [String]
+    },
+
+    eventDate:{
         type: Date,
         defaut: Date.now(),
     },
