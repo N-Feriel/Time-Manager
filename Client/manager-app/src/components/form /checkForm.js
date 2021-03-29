@@ -54,7 +54,9 @@ function CheckForm({categories, name, dataForm, setdataForm, handleChangeCheckBo
 
     return (
         <div>
-            <h4>{name}</h4>
+            <h4 style={{margin:'30px 0 5px 20px'}}>
+                {name}
+            </h4>
             {showCategories()}
         </div>
     )

@@ -1,166 +1,180 @@
-import React, {useState} from 'react';
-import { useHistory } from 'react-router';
-import Button from '../../components/button/Button';
-import FormField from '../../components/form /FormField';
-import SelectedField from '../../components/form /SelectedField';
+import moment from "moment";
+import React, { useContext, useState } from "react";
+import { useHistory } from "react-router";
+import styled from "styled-components";
+import Button from "../../components/button/Button";
+import FormField from "../../components/form /FormField";
+import SelectedField from "../../components/form /SelectedField";
+import { UserContext } from "../../components/UserContext";
+import { themeVars } from "../../utils/GlobalStyles";
+import OneToOneEvent from "./component/OneToOneEvent";
 
+function RegisterEventPage({ isOneToOneEvent, types }) {
+  const { user } = useContext(UserContext);
+  console.log(user);
 
-function RegisterEventPage() {
+  const initialState = {
+    name: "",
+    participants: {
+      numberOfParticipants: 1,
+      participantsName: [user._id],
+    },
+    time: Number,
+    eventDate: "",
+    type: "",
+  };
 
+  const history = useHistory();
 
-    const initialState = {
-        name: "",
-        participants:{
-            numberOfParticipants: Number,
-            participantsName:[]
+  const [sources, setSources] = useState([
+    { _id: "Meeting", name: "Meeting", text: "MEETING" },
+    { _id: "Training", name: "Training", text: "TRAINING" },
+    { _id: "OneToOne", name: "OneToOne", text: "One To One" },
+    { _id: "Others", name: "Others", text: "OTHERS" },
+  ]);
+
+  const [errors, setErrors] = useState("");
+
+  const [formData, setFormData] = useState(initialState);
+
+  const url = "/api/event";
+
+  const handleChange = (ev) => {
+    const target = ev.target;
+
+    const value = target.type === "checkbox" ? target.checked : target.value;
+
+    const name = target.name;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (ev) => {
+    ev.preventDefault();
+
+    // console.log(formData)
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
-        time: Number,
-        eventDate: '',
-        type: ''
+      });
 
+      const responseBody = await response.json();
 
+      if (responseBody.status === 201) {
+        history.push("/");
+      } else {
+        throw responseBody.message;
+      }
+    } catch (error) {
+      setErrors(errors);
     }
+  };
 
-    const history = useHistory()
+  const handleChangeObj = (ev) => {
+    const target = ev.target;
 
-    const [sources , setSources]= useState([
-        { _id: "Met", name: "Meeting", text: "MEETING" },
-        { _id: "Trn", name: "Training", text: "TRAINING" },
-        { _id: "OneToOne", name: "OneToOne", text: "One To One"},
-        { _id: "OTHR", name: "OTHERS", text: "OTHERS"},
+    const value = target.type === "checkbox" ? target.checked : target.value;
 
-    ]);
+    const name = target.name;
 
-    const [errors, setErrors]= useState('');
-    
-    const [formData, setFormData] = useState(initialState);
+    setFormData({
+      ...formData,
+      participants: {
+        ...formData.participants,
+        [name]: value,
+      },
+    });
+  };
 
-    const url = "/api/event";
+  console.log(formData, "register event");
 
-    const handleChange = (ev) => {
+  return (
+    <div>
+      {isOneToOneEvent ? (
+        <OneToOneEvent />
+      ) : (
+        <Container>
+          <h2> Add new Event</h2>
+          <form className="formC" onSubmit={handleSubmit}>
+            <FormField
+              name="name"
+              label="Name"
+              type="text"
+              handleChange={handleChange}
+              value={formData.name}
+            />
 
-        const target= ev.target;
-        
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        
-        const name= target.name
+            <SelectedField
+              name="type"
+              label="Type"
+              type="text"
+              handleChange={handleChange}
+              value={formData.type}
+              sources={types || sources}
+            />
 
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+            <FormField
+              name="eventDate"
+              label="Date"
+              type="date"
+              handleChange={handleChange}
+              value={formData.eventDate}
+            />
+            <FormField
+              name="numberOfParticipants"
+              label="Number Of Participants"
+              type="number"
+              handleChange={handleChangeObj}
+              value={formData.participants.numberOfParticipants}
+            />
+            <FormField
+              name="time"
+              label="Time"
+              type="text"
+              handleChange={handleChange}
+              value={formData.time}
+            />
 
-    };
-
-
-
-        
-
-
-    const handleSubmit = async(ev) =>{
-        ev.preventDefault();
-
-        // console.log(formData)
-
-        try{
-            const responseHeader = await fetch(url, {
-                method: 'POST',
-                body: JSON.stringify(formData),
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-            })
-
-            const response = await responseHeader.json()
-
-            if(response.status === 201){
-                history.push('/')
-
-            }else{
-                throw(response.message)
-            }
-        }catch(error){
-                setErrors(errors)
-            }
-
-    }
-
-
-    const handleChangeObj= (ev)=>{
-
-        const target= ev.target;
-        
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        
-        const name= target.name
-
-
-        setFormData({
-            ...formData,
-            participants:{
-                ...formData.participants,
-                [name]: value
-            } 
-        });
-    }
-
-
-    return (
-        <div>
-            Add new Event
-
-            <form onSubmit={handleSubmit} style={{width: "90%"}} >
-
-                <FormField 
-                    name="name"
-                    label="Name"
-                    type="text"
-                    handleChange={handleChange}
-                    value={formData.name}
-                />
-
-                <SelectedField 
-                    name="type"
-                    label="Type"
-                    type="text"
-                    handleChange={handleChange}
-                    value={formData.type}
-                    sources={sources}
-                
-                />
-
-                <FormField 
-                    name="eventDate"
-                    label="Date"
-                    type="date"
-                    handleChange={handleChange}
-                    value={formData.eventDate}
-                />
-                <FormField 
-                    name="numberOfParticipants"
-                    label="Number Of Participants"
-                    type="number"
-                    handleChange={handleChangeObj}
-                    value={formData.participants.numberOfParticipants}
-                />
-                <FormField 
-                    name="time"
-                    label="Time"
-                    type="text"
-                    handleChange={handleChange}
-                    value={formData.time}
-                />
-
-                <Button type='submit'>
-                    save
-                </Button>
-
-
-
-            </form>
-        </div>
-    )
+            <div style={{ alignSelf: "flex-end", margin: "1rem" }}>
+              <Button type="submit">save</Button>
+            </div>
+          </form>
+        </Container>
+      )}
+    </div>
+  );
 }
 
-export default RegisterEventPage
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 80%;
+  margin: auto;
+
+  & .formC {
+    width: 80%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  & button {
+    background: ${themeVars.violet};
+    color: white;
+  }
+`;
+
+export default RegisterEventPage;

@@ -1,191 +1,253 @@
-import React, {useState} from 'react'
-import FormField from '../../components/form /FormField';
-import { useHistory } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import FormField from "../../components/form /FormField";
+import { useHistory, useLocation } from "react-router-dom";
 
-import Button from "../../components/button/Button"
-import styled from 'styled-components';
-import CheckForm from '../../components/form /checkForm';
-import CheckBoxField from "../../components/form /CheckBoxField"
-import PersonnelForm from '../../components/form /PersonnelForm';
-import SelectedField from '../../components/form /SelectedField';
-import FromRegisterM from './components/FromRegisterM';
-import GDaughterForm from '../gDaughterPage/components/GDaughterForm';
+import Button from "../../components/button/Button";
+import styled from "styled-components";
+import CheckForm from "../../components/form /checkForm";
+import CheckBoxField from "../../components/form /CheckBoxField";
+import PersonnelForm from "../../components/form /PersonnelForm";
+import SelectedField from "../../components/form /SelectedField";
+import FromRegisterM from "./components/FromRegisterM";
+import GDaughterForm from "../gDaughterPage/components/GDaughterForm";
+import { UserContext } from "../../components/UserContext";
+import _ from "lodash";
 
+function RegisterPage({ initialState, isUpdate, isGDaughter, location }) {
+  let history = useHistory();
 
+  const [errors, setErrors] = useState("");
 
-function RegisterPage({initialState, isUpdate, isGDaughter}) {
+  const [formData, setFormData] = useState(initialState);
 
-    let history = useHistory();
+  const { user } = useContext(UserContext);
 
+  let url;
 
-    const [errors, setErrors]= useState('');
-    
-    const [formData, setFormData] = useState(initialState);
+  !isGDaughter
+    ? (url = "/api/register/gMother/")
+    : (url = "/api/register/gDaughter/");
 
+  const { pathname, search, state } = useLocation();
 
-    let url
-    
-    isGDaughter ? url= '/api/users/infoGMother/' :  url= '/api/users/infoGDaughter/';
-    
-    
-    const [sources , setSources]= useState([
-        { _id: "PPC", name: "PPC", text: "PPC" },
-        { _id: "SITE", name: "SITE", text: "SITE" },
-        { _id: "FB", name: "Facebook", text: "Facebook"},
-        { _id: "CLSC", name: "CLSC", text: "CLSC"},
-        { _id: "OTHR", name: "OTHERS", text: "OTHERS"},
+  const [sourcesGM, setSourcesGM] = useState([
+    { _id: "PPC", name: "PPC", text: "PPC" },
+    { _id: "SITE", name: "SITE", text: "SITE" },
+    { _id: "FB", name: "Facebook", text: "Facebook" },
+    { _id: "CLSC", name: "CLSC", text: "CLSC" },
+    { _id: "OTHR", name: "OTHERS", text: "OTHERS" },
+  ]);
 
-    ]);
+  const [sourcesGD, setSourcesGD] = useState([
+    { _id: "PPC", name: "PPC", text: "PPC" },
+    { _id: "SITE", name: "SITE", text: "SITE" },
+    { _id: "FB", name: "Facebook", text: "Facebook" },
+    { _id: "CLSC", name: "CLSC", text: "CLSC" },
+    { _id: "LOT", name: "LOT", text: "LOT" },
+    { _id: "OTHR", name: "OTHERS", text: "OTHERS" },
+  ]);
 
-    const handleChange = (ev) => {
+  let hasAccess = user ? user.isAdmin : false;
 
-        const target= ev.target;
-        
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        
-        const name= target.name
+  const jwt = localStorage.getItem("token");
 
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+  const handleChange = (ev) => {
+    const target = ev.target;
 
-        };
+    const value = target.type === "checkbox" ? target.checked : target.value;
 
+    const name = target.name;
 
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
-    const handleChangeCheckBox= (name, data)=>{
-
-        if(data){
-            setFormData({
-                ...formData,
-                [name]:[
-                    ...data
-                ]
-            });
-        }
-
+  const handleChangeCheckBox = (name, data) => {
+    if (data) {
+      setFormData({
+        ...formData,
+        [name]: [...data],
+      });
     }
-    
-    console.log(formData)
+  };
 
-    const handleSubmit = async(ev) =>{
-        ev.preventDefault();
+  const handleSubmit = async (ev) => {
+    ev.preventDefault();
 
-        let response = null
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
+        },
+      });
 
-        try{
-            if(!isUpdate){
-                response = await fetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify(formData),
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                    },
-                })
+      const responseBody = await response.json();
 
-            }else{
-                response = await fetch(`${url}/user`, {
-                    method: 'PATCH',
-                    body: JSON.stringify(formData),
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                    },
-                })
+      if (responseBody.status === 201) {
+        // history.push('/admin')
+        console.log(responseBody.data, "response");
 
-            }
+        // if (!isGDaughter) {
+        //   //create user login Account with info
 
-            const responseBody = await response.json()
+        //   //send email to the user to change his password and validate his email
+        //   let mailData = _.pick(formData, ["first_name", "last_name", "email"]);
+        //   let response2 = await fetch("/api/send", {
+        //     method: "POST",
+        //     body: JSON.stringify(mailData),
+        //     headers: {
+        //       Accept: "application/json",
+        //       "Content-Type": "application/json",
+        //       "x-auth-token": `${jwt}`,
+        //     },
+        //   });
 
-            if(responseBody.status === 201){
-                history.push('/admin')
+        //   let responseBody2 = await response2.json();
 
-            }else{
-                throw(responseBody.message)
-            }
+        //   if (responseBody2.status === 201) {
+        //     alert(responseBody2.message);
+        //   } else {
+        //     throw responseBody2.message;
+        //     //redirect user to resend email!!!
+        //   }
+        // } else {
+        //   //send email to GMother that assig to
 
-            }catch(error){
-                setErrors(error)
-        }
+        //   let mailGM = _.pick(formData, [
+        //     "first_name",
+        //     "last_name",
+        //     "email",
+        //     "assignTo",
+        //   ]);
+        //   console.log(mailGM, "mailG");
+
+        //   let responseGM = await fetch("/api/send/assignto", {
+        //     method: "POST",
+        //     body: JSON.stringify(mailGM),
+        //     headers: {
+        //       Accept: "application/json",
+        //       "Content-Type": "application/json",
+        //       "x-auth-token": `${jwt}`,
+        //     },
+        //   });
+
+        //   let responseBodyGM = await responseGM.json();
+
+        //   if (responseBodyGM.status === 201) {
+        //     alert(responseBodyGM.message);
+        //   } else {
+        //     throw responseBodyGM.message;
+        //     //redirect user to resend email!!!
+        //   }
+        // }
+
+        history.push(state.redirectTo);
+      } else {
+        throw responseBody.message;
+      }
+    } catch (error) {
+      setErrors(error);
     }
-    return (
-        <Wrapper >
-            {errors &&
-            <div style={{color: 'red'}}> {errors}
-                </div>
-            }
+  };
+  return (
+    <Wrapper>
+      {errors && (
+        <div style={{ color: "red", marginTop: "2rem" }}> {errors}</div>
+      )}
 
-            {!isUpdate && 
-                <h4>
-                    Register New {isGDaughter ? 'gDaughter' : "gMother"} 
-                </h4>
-            
-            }
+      {!isUpdate && (
+        <h2>Register New {isGDaughter ? "gDaughter" : "gMother"}</h2>
+      )}
 
-            <form onSubmit={handleSubmit} style={{width: "90%"}} >
+      <form className="formC" onSubmit={handleSubmit}>
+        <PersonnelForm
+          formData={formData}
+          setFormData={setFormData}
+          handleChange={handleChange}
+        />
 
-                <PersonnelForm formData={formData}
-                        setFormData={setFormData}
-                        handleChange={handleChange}
-                />
+        <SelectedField
+          name="origin"
+          label="Source"
+          type="text"
+          selectedValue={formData.origin}
+          handleChange={handleChange}
+          defaultValue={formData.origin}
+          sources={isGDaughter ? sourcesGD : sourcesGM}
+        />
 
-                <SelectedField 
-                    name="origin"
-                    label="Source"
-                    type="text"
-                    selectedValue={formData.origin}
-                    handleChange={handleChange}
-                    defaultValue={formData.origin}
-                    sources={sources}
-                
-                />
+        {isGDaughter ? (
+          <GDaughterForm
+            formData={formData}
+            setFormData={setFormData}
+            handleChange={handleChange}
+            handleChangeCheckBox={handleChangeCheckBox}
+            hasAccess={hasAccess}
+          />
+        ) : (
+          <>
+            <FromRegisterM
+              formData={formData}
+              handleChange={handleChange}
+              handleChangeCheckBox={handleChangeCheckBox}
+            />
+          </>
+        )}
 
+        <div style={{ display: "flex", alignItems: "space-between" }}>
+          {!isGDaughter && (
+            <CheckBoxField
+              name="isAdmin"
+              label="Admin"
+              type="checkbox"
+              defaultChecked={formData.isAdmin}
+              handleChange={handleChange}
+            />
+          )}
+          <CheckBoxField
+            name="isActif"
+            label="Actif"
+            type="checkbox"
+            defaultChecked={formData.isActif}
+            handleChange={handleChange}
+          />
+        </div>
 
-
-                {isGDaughter ? 
-                    <GDaughterForm formData={formData}
-                        setFormData={setFormData}
-                        handleChange={handleChange}
-                        handleChangeCheckBox={handleChangeCheckBox}
-                    />
-                    : 
-                    <FromRegisterM formData={formData}
-                    handleChange={handleChange}
-                    handleChangeCheckBox={handleChangeCheckBox}
-
-                />
-                    
-                }
-
-                <CheckBoxField
-                    name="isActif"
-                    label="Actif"
-                    type="checkbox"
-                    defaultChecked={formData.isActif}
-                    handleChange={handleChange}
-                />
-
-                <Button type='submit'>
-                    {isUpdate ? "Update": "Submit"}
-                </Button>
-                </form>
-        </Wrapper>
-    )
+        <Button type="submit">{isUpdate ? "Update" : "Submit"}</Button>
+      </form>
+    </Wrapper>
+  );
 }
-
 
 const Wrapper = styled.div`
-    display: flex;
-    flex-direction:column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
 
-
-& .checkBox{
+  & .checkBox {
     width: 10px;
-}
+  }
 
-`
-export default RegisterPage
- 
+  & .formC {
+    width: 90%;
+    /* margin: auto; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: space-evenly;
+  }
+
+  & button {
+    width: fit-content;
+    align-self: flex-end;
+  }
+`;
+export default RegisterPage;

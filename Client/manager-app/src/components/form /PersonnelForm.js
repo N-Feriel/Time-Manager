@@ -23,7 +23,7 @@ function PersonnelForm({formData, handleChange, setFormData}) {
     return (
         <Container>
 
-            <div>
+            <div style={{alignSelf: 'center'}}>
                 <FormField 
                     name="first_name"
                     label="First Name"
@@ -40,7 +40,7 @@ function PersonnelForm({formData, handleChange, setFormData}) {
                 />
             </div>
 
-            <div>
+            <div style={{alignSelf: 'center'}}>
                 <FormField 
                     name="email"
                     label="Email"
@@ -59,8 +59,8 @@ function PersonnelForm({formData, handleChange, setFormData}) {
 
             </div>
 
-            <Container>
-                    <div>
+            <Container style={{alignSelf: 'center'}}>
+                    <div >
                         <FormField 
                             name="street"
                             label="Street"
@@ -78,7 +78,7 @@ function PersonnelForm({formData, handleChange, setFormData}) {
 
                     </div>
 
-                    <div>
+                    <div >
                         <FormField 
                             name="state"
                             label="State/Province"
@@ -116,8 +116,10 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+    
 
     & div{
+        width: 100%;
         display: flex;
     }
 `

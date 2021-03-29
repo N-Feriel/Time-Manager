@@ -1,25 +1,27 @@
-require('express-async-errors');
-const logger = require('./config/winston');
-const winston = require('winston')
-require('winston-mongodb');
-const express = require('express');
+require("express-async-errors");
+const logger = require("./config/winston");
+const winston = require("winston");
+require("winston-mongodb");
+const express = require("express");
+var bodyParser = require("body-parser");
 const app = express();
 
-const morgan = require('morgan');
-const connectDB = require('./startup/db')
-const types = require('./routes/types')
-const users = require("./routes/users")
-const auth = require("./routes/auth");
-const events = require('./routes/events');
-const error = require("./middleware/error");
+const morgan = require("morgan");
+const connectDB = require("./startup/db");
 
+const register = require("./routes/register");
+const types = require("./routes/types");
+const users = require("./routes/users");
+const auth = require("./routes/auth");
+const events = require("./routes/events");
+const error = require("./middleware/error");
+const mailSend = require("./routes/mailSend");
 
 app.use(express.json());
 // app.use(morgan('combined', { stream: logger.stream }));
 
 //Use mongoose to connect to DataBase
-connectDB()
-
+connectDB();
 // winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 // winston.add(new winston.transports.MongoDB({db:`${MONGO_URI}` }));
 
@@ -31,13 +33,15 @@ connectDB()
 //     throw ex
 // })
 
-app.use('/api/types', types)
-app.use('/api/users', users)
-app.use('/api/auth', auth)
-app.use('/api/event', events)
+app.use("/api/types", types);
+app.use("/api/register", register);
+app.use("/api/users", users);
+app.use("/api/auth", auth);
+app.use("/api/event", events);
+app.use("/api/send", mailSend);
 
-app.use(error)
+app.use(error);
 
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 4000;
 
-app.listen(port, ()=> console.log(`listening on port ${port}...`))
+app.listen(port, () => console.log(`listening on port ${port}...`));

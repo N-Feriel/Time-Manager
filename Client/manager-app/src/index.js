@@ -1,24 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 
-import App from './App';
+import App from "./App";
 
-
-import { Provider } from 'react-redux';
+import { Provider } from "react-redux";
 import configureStore from "./store/index";
-
-
+import { UserProvider } from "./components/UserContext";
 
 const store = configureStore();
 
-  const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <UserProvider>
+      <App />
+    </UserProvider>
   </Provider>,
   rootElement
 );
-
-
-

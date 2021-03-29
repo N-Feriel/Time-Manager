@@ -1,91 +1,93 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router'
-import styled from 'styled-components'
-import { themeVars } from '../../../utils/GlobalStyles'
+import React from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
+import styled from "styled-components";
+import { themeVars } from "../../../utils/GlobalStyles";
 
+import { removeGMother } from "../../../store/reducers/GMother/actions";
+import Button from "../../../components/button/Button";
 
-import {removeGMother} from "../../../store/reducers/GMother/actions"
+function GmotherDetails({ gMother }) {
+  const history = useHistory();
 
-function GmotherDetails({gMother}) {
+  const dispatch = useDispatch();
 
-    const history = useHistory()
+  const handleGMDetails = (_id) => {
+    history.push(`/infoMother/${_id}`);
+  };
 
-    const dispatch = useDispatch();
+  const handleDelete = async (_id) => {
+    alert("Are you sure to delete the user permantely");
+    try {
+      const response = await fetch(`/api/users/infoGMother/${_id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
 
-    const handleGMDetails = (_id)=>{
+      const responseBody = await response.json();
 
-        history.push(`/infoMother/${_id}`)
+      if (responseBody.status === 200) {
+        dispatch(removeGMother(gMother));
+        console.log("removed");
+        // alert(`Gmother with ${gMother.first_name} ${gMother.last_name}
+        // was deleted form Data Base`)
+      } else {
+        throw responseBody.message;
+      }
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    const handleDelete =async(_id)=>{
+  return (
+    <Wrapper>
+      <div style={{ flexDirection: "column" }}>
+        <strong>
+          {gMother.first_name} {gMother.last_name}
+        </strong>
+        <span>{gMother.email}</span>
+      </div>
+      <div>{gMother.phone}</div>
+      <div>
+        <Button onClick={() => handleGMDetails(gMother._id)}>Details</Button>
 
-        try{
-
-        const responseHeader = await fetch(`/api/users/infoGMother/${_id}`, {
-            method: 'DELETE',
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-        })
-
-        const response = await responseHeader.json()
-
-        if(response.status === 200){
-
-            dispatch(removeGMother(gMother))
-            console.log('removed')
-            // alert(`Gmother with ${gMother.first_name} ${gMother.last_name} 
-            // was deleted form Data Base`)
-
-        }else{
-            throw(response.message)
-        }
-
-        }catch(error){
-            console.log(error)
-        }
-    }
-
-
-    return (
-        <Wrapper >
-            <strong>
-                {gMother.email}
-            </strong>
-
-            <span>
-                {gMother.first_name} {gMother.last_name}
-            </span>
-            <span>
-                {gMother.phone}
-            </span>
-            <button onClick={()=> handleGMDetails(gMother._id)}>Details</button>
-
-            <button onClick={() => handleDelete(gMother._id)}>Delete</button>
-            
-        </Wrapper>
-    )
+        <Button onClick={() => handleDelete(gMother._id)}>Delete</Button>
+      </div>
+    </Wrapper>
+  );
 }
 
-
 const Wrapper = styled.div`
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.1)
+  );
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border-radius: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & div {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    border: solid 1px ${themeVars.secondGreen};
-    padding: 0 20px;
+  }
 
-    & span{
-        padding: 20px;
-    }
+  & span {
+    padding: 0.5rem 1rem 0 0;
+  }
 
-    & button{
-        margin: 10px;
-        padding: 5px;
-    }
-
-
-
-`
-export default GmotherDetails
+  & button {
+    margin: 1rem 0.5rem;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.6);
+  }
+`;
+export default GmotherDetails;
