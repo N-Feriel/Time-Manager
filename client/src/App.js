@@ -70,26 +70,16 @@ function App() {
             path="/register/event"
             component={RegisterEventPage}
           />
-
-          {/* <Route exact path="/infoMother/:_id">
-            <GMotherPage />
-          </Route> */}
-
           <ProtectedRoute
             exact
             authed={true}
             path="/infoMother/:_id"
             component={GMotherPage}
           />
-          {/* <Route exact path="/infoDaughter/:_id">
-            <GDaughterPage />
-          </Route> */}
 
           <ProtectedRoute exact path="/stat" authed={true} component={Stats} />
 
-          <Route exact path="/event/:_id">
-            <EventPage />
-          </Route>
+          <ProtectedRoute exact path="/event/:_id" component={EventPage} />
 
           <ProtectedRoute
             exact

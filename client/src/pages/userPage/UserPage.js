@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -30,8 +30,9 @@ import supportmom from "../../assets/support-mom.jpg";
 import { MdNotificationsActive } from "react-icons/md";
 import { BiLogOutCircle } from "react-icons/bi";
 import breastfeeding from "../../assets/breastfeeding.jpg";
+import { UserContext } from "../../components/UserContext";
 
-function UserPage({ user }) {
+function UserPage() {
   const url = "/api/users/GDaugherList";
 
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ function UserPage({ user }) {
   const [userNotifications, setUserNotifications] = useState([]);
   const [totalNew, setTotalNew] = useState(0);
 
+  const { user } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
 
   const [modalIsOpen, setIsOpenModal] = useState(false);

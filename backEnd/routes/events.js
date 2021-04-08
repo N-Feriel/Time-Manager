@@ -29,6 +29,6 @@ router.patch("/:eventId", [auth, admin], updateEvent);
 router.delete("/:eventId", [auth, admin], deleteEvent);
 
 router.get("/oneToOne/totalTime/:gdId", auth, getTotalTimeOneToOne);
-router.get("/oneToOne/totalTime", auth, getTotalOneToOne);
+router.get("/oneToOne/totalTime", getTotalOneToOne);
 
 module.exports = router;

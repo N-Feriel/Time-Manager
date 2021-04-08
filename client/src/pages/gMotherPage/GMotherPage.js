@@ -108,6 +108,7 @@ function GMotherPage() {
 
   function closeModal() {
     setIsOpen(false);
+    history.push("/admin");
   }
 
   const getGDAssigned = async () => {
@@ -137,12 +138,6 @@ function GMotherPage() {
   };
 
   const handleDelete = async () => {
-    // not sure to use it or no??
-
-    setMessageAl(
-      "Are you sure to delete the user-- it's permenate all data will be erease "
-    );
-
     try {
       const response = await fetch(`${url}/${_id}`, {
         method: "DELETE",
@@ -150,13 +145,15 @@ function GMotherPage() {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
         },
       });
 
       const responseBody = await response.json();
 
-      if (responseBody.status === 201) {
-        history.push("/admin");
+      if (responseBody.status === 200) {
+        setMessageAl("User deleted");
+        setIsOpen(true);
       } else {
         throw responseBody.message;
       }
@@ -184,8 +181,10 @@ function GMotherPage() {
           <div style={{ display: "flex" }}>
             <Circle1></Circle1>
 
-            <h3 style={{ margin: "-1rem 1rem", color: `${themeVars.pink}` }}>
-              {gMData.last_name} Details Page
+            <h3
+              style={{ margin: "-0.5rem 1rem", color: `${themeVars.darkBlue}` }}
+            >
+              {gMData.last_name} Mother Page
             </h3>
           </div>
 
@@ -225,7 +224,7 @@ function GMotherPage() {
                 borderRadius: "1rem",
               }}
             >
-              <h4>Total time </h4>
+              <h3>Total time </h3>
               {userEvents.length > 0 ? (
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
                   {userEvents.map((eventType) => (
@@ -270,9 +269,7 @@ function GMotherPage() {
                 <Button onClick={handleArchive}>
                   {gMData.isActif ? "Archive" : "Activate"}
                 </Button>
-                <Button disabled onClick={handleDelete}>
-                  Delete
-                </Button>
+                <Button onClick={handleDelete}>Delete</Button>
               </div>
             ) : (
               <div style={{ flex: 3 }}>

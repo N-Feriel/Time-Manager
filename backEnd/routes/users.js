@@ -30,7 +30,7 @@ router.get("/infoGMother", auth, getUsersGMInfo);
 router.get("/stat/:userType", getTotalUser);
 router.get("/infoGMother/:userId", getUserGMInfo);
 router.get("/gMotherList", auth, getGMotherList);
-router.patch("/infoGMother/user", updateUserGMInfo);
+router.patch("/infoGMother/user", [auth, admin], updateUserGMInfo);
 router.delete("/infoGMother/:userId", [auth, admin], deleteUserGMInfo);
 
 // Create and update the GDaughter Info DataBase
@@ -42,7 +42,7 @@ router.get("/GDaugherList", auth, getUsersGDAssignTo);
 router.get("/GDaugherList/:userId", auth, getGDAssignToData);
 
 // router.post("/infoGDaughter", [auth, admin], createUserGDInfo);
-router.patch("/infoGDaughter/user", auth, updateUserGDInfo);
+router.patch("/infoGDaughter/user", updateUserGDInfo);
 router.delete("/infoGDaughter/:userId", [auth, admin], deleteUserGDInfo);
 
 module.exports = router;

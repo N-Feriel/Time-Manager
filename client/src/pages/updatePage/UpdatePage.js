@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { UserContext } from "../../components/UserContext";
 import ModalC from "../../components/ModalC";
 
-import { updteGDaughterData } from "../../store/reducers/GDaughter/actions";
 import { updteGMotherData } from "../../store/reducers/GMother/actions";
 
 function UpdatePage({
@@ -99,7 +98,6 @@ function UpdatePage({
 
       if (responseBody.status === 201) {
         if (isGDaughter) {
-          dispatch(updteGDaughterData(responseBody.data));
           setGDData(responseBody.data);
 
           if (

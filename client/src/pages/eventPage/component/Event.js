@@ -14,6 +14,7 @@ function Event({ updateValue }) {
   const url = "/api/event";
   const [errors, setErrors] = useState("");
   const history = useHistory();
+  const jwt = localStorage.getItem("token");
 
   const { user } = useContext(UserContext);
 
@@ -34,7 +35,7 @@ function Event({ updateValue }) {
       participantsName: [user._id],
     },
     time: Number,
-    eventDate: null,
+    eventDate: new Date().toISOString(),
     type: "",
     typeOneToOne: "DEFAULT",
   };
@@ -60,6 +61,7 @@ function Event({ updateValue }) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
         },
       });
 

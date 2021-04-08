@@ -65,8 +65,7 @@ function GmotherDetails({ gMother }) {
       const responseBody = await response.json();
 
       if (responseBody.status === 201) {
-        console.log(responseBody.data);
-        // setStatusGMData("idle");
+        // console.log(responseBody.data);
         dispatch(updteGMotherData(responseBody.data));
       } else {
         throw responseBody.message;

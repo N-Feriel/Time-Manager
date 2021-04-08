@@ -30,6 +30,7 @@ function OneToOneEvent({ userGD, timeSubmitedCallback }) {
     time: Yup.number().required("Required").positive("Must be Positive Number"),
   });
 
+  const jwt = localStorage.getItem("token");
   const url = "/api/event";
 
   const communicationTypes = [
@@ -48,6 +49,7 @@ function OneToOneEvent({ userGD, timeSubmitedCallback }) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
         },
       });
 

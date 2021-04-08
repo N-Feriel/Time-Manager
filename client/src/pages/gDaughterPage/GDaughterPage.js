@@ -6,12 +6,11 @@ import { UserContext } from "../../components/UserContext";
 import bebeImg from "../../assets/peauapeau.webp";
 import bebePic from "../../assets/picture-bebe.jpg";
 import Button from "../../components/button/Button";
-import { useDispatch } from "react-redux";
+
 import OneToOneEvent from "../eventPage/component/OneToOneEvent";
 import UpdatePage from "../updatePage/UpdatePage";
 import { onSmallTabletMediaQuery } from "../../utils/responsive";
 import ModalC from "../../components/ModalC";
-import { getgMotherList } from "../../services/apiHelp";
 import Error from "../../components/Error";
 import Loading from "../../components/Loading";
 import TextError from "../../components/formik/TextError";
@@ -98,6 +97,8 @@ function GDaughterPage() {
       setErrors(error);
     }
   };
+
+  console.log(gDData, "gDaughter");
 
   // const getList = async () => {
   //   try {
