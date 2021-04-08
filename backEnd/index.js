@@ -17,6 +17,7 @@ const events = require("./routes/events");
 const error = require("./middleware/error");
 const mailSend = require("./routes/mailSend");
 const notification = require("./routes/notifications");
+const { path } = require("app-root-path");
 
 app.use(express.json());
 // app.use(morgan('combined', { stream: logger.stream }));
@@ -43,6 +44,14 @@ app.use("/api/send", mailSend);
 app.use("/api/notification", notification);
 
 app.use(error);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 const port = process.env.PORT || 4000;
 
