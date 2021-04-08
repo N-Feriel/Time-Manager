@@ -1,7 +1,7 @@
 require("dotenv").config();
 var nodemailer = require("nodemailer");
 const { USEREMAIL, PASS } = process.env;
-const { UserGM } = require("../../models/info");
+const { UserGM } = require("../../models/user");
 
 var transport = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
@@ -72,8 +72,11 @@ const firstMail = async (req, res) => {
 const getNewGDaughterMail = async (req, res) => {
   let { first_name, last_name, email, assignTo } = req.body;
 
+  console.log(assignTo.assignGM, "req");
+
   const userInfo = await UserGM.findById(assignTo.assignGM);
 
+  console.log(userInfo, "info");
   if (!userInfo)
     return res.status(404).json({
       status: 404,

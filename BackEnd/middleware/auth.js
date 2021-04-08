@@ -11,7 +11,7 @@ function auth(req, res, next) {
 
     next();
   } catch (ex) {
-    res.status(400).send("Invalid token");
+    res.status(400).json({ status: 400, message: "Invalid token" });
   }
 }
 

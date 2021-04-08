@@ -12,7 +12,7 @@ const getUsersGMInfo = async (req, res) => {
       .status(400)
       .json({ status: 400, message: "can't find Users in dataBase" });
 
-  res.status(201).json({ status: 201, data: infoUsers });
+  res.status(200).json({ status: 200, data: infoUsers });
 };
 
 const getUserGMInfo = async (req, res) => {
@@ -28,51 +28,6 @@ const getUserGMInfo = async (req, res) => {
 
   res.status(200).json({ status: 200, data: userInfo });
 };
-
-// const createUserGMInfo = async (req, res) => {
-//   const schema = Joi.object({
-//     first_name: Joi.string().min(4).required(),
-//     last_name: Joi.string().min(4).required(),
-//     email: Joi.string().min(6).required().email(),
-//     address: Joi.object({
-//       city: Joi.string(),
-//       street: Joi.string(),
-//       zipCode: Joi.string(),
-//       state: Joi.string(),
-//     }),
-//     phone: Joi.string(),
-//     origin: Joi.string(),
-//     languages: Joi.array().items(Joi.string()),
-//     training: Joi.array(),
-//     isAdmin: Joi.boolean(),
-//     isActif: Joi.boolean(),
-//     isMember: Joi.boolean(),
-//     startDate: Joi.string(),
-//   });
-
-//   const { error } = schema.validate(req.body);
-
-//   if (error)
-//     return res
-//       .status(400)
-//       .json({ status: 400, message: error.details[0].message });
-
-//   let userInfo = await UserGM.findOne({ email: req.body.email });
-
-//   if (userInfo)
-//     return res
-//       .status(400)
-//       .json({ status: 400, message: "User already registed" });
-
-//   userInfo = new UserGM(req.body);
-
-//   await userInfo.save();
-
-//   return res.status(201).json({
-//     status: 201,
-//     data: userInfo,
-//   });
-// };
 
 const getTotalUser = async (req, res) => {
   const { userType } = req.params;
@@ -118,7 +73,6 @@ const updateUserGMInfo = async (req, res) => {
   const update = { ...req.body };
   delete update._id;
 
-  console.log(req.body);
   const opts = { new: true, timestamps: { createdAt: false, updatedAt: true } };
 
   let userInfoUpdate = await UserGM.findOneAndUpdate(
@@ -188,6 +142,33 @@ const getUsersGDAssignTo = async (req, res) => {
   res.status(200).json({ status: 200, data: GDUsers });
 };
 
+const getGMotherList = async (req, res) => {
+  const gMotherList = await UserGM.aggregate([
+    { $match: { isActif: { $all: [true] } } },
+    {
+      $group: {
+        _id: null,
+        listUsers: {
+          $push: {
+            key: "$email",
+            first_name: "$first_name",
+            last_name: "$last_name",
+            _id: "$_id",
+            value: "$_id",
+          },
+        },
+      },
+    },
+  ]);
+
+  if (!gMotherList)
+    return res
+      .status(400)
+      .json({ status: 400, message: "can't find Users in dataBase" });
+
+  res.status(200).json({ status: 200, data: gMotherList });
+};
+
 const getGDAssignToData = async (req, res) => {
   // const _idGD = req.user._id
 
@@ -203,65 +184,15 @@ const getGDAssignToData = async (req, res) => {
   const actifsGD = GDUsers.filter((GD) => GD.isActif == true);
   const archivesGD = GDUsers.filter((GD) => GD.isActif == false);
 
-  console.log(_idGM, "id", GDUsers);
-
   res
     .status(200)
     .json({ status: 200, data: { archives: archivesGD, actifs: actifsGD } });
 };
 
-// const createUserGDInfo = async (req, res) => {
-//   const schema = Joi.object({
-//     first_name: Joi.string().min(4).required(),
-//     last_name: Joi.string().min(4).required(),
-//     email: Joi.string().min(6).required().email(),
-//     phone: Joi.string(),
-//     address: Joi.object({
-//       city: Joi.string(),
-//       street: Joi.string(),
-//       zipCode: Joi.string(),
-//       state: Joi.string(),
-//     }),
-//     infoParent: Joi.object(
-//       { name: Joi.string() },
-//       { isContact: Joi.boolean() }
-//     ),
-//     assignTo: Joi.object(
-//       { assignGM: Joi.string() },
-//       { isAssign: Joi.boolean() }
-//     ),
-//     isActif: Joi.boolean(),
-//     origin: Joi.string(),
-//     isMember: Joi.boolean(),
-//     dueDate: Joi.date(),
-//   });
-
-//   const { error } = schema.validate(req.body);
-
-//   if (error)
-//     return res
-//       .status(400)
-//       .json({ status: 400, message: error.details[0].message });
-
-//   let userInfo = await UserGD.findOne({ email: req.body.email });
-
-//   if (userInfo)
-//     return res
-//       .status(400)
-//       .json({ status: 400, message: "User already registed" });
-
-//   userInfo = new UserGD(req.body);
-
-//   await userInfo.save();
-
-//   return res.status(201).json({
-//     status: 201,
-//     data: userInfo,
-//   });
-// };
-
 const updateUserGDInfo = async (req, res) => {
-  const filter = { _id: req.body._id };
+  const { _id, email } = req.body;
+
+  const filter = _id ? { _id: _id } : { email: email };
   const update = { ...req.body };
   delete update._id;
 
@@ -290,15 +221,38 @@ const deleteUserGDInfo = async (req, res) => {
   res.status(200).json({ status: 200, data: userInfoToRemove });
 };
 
+const getUsersGDStatus = async (req, res) => {
+  const statusType = req.params.statusType;
+
+  let GDUsers;
+
+  if (statusType == "active") {
+    GDUsers = await UserGD.find({ isActif: true });
+  } else if (statusType == "archive") {
+    GDUsers = await UserGD.find({ isActif: false });
+  } else if (statusType == "toAssign") {
+    GDUsers = await UserGD.find({ "assignTo.assignGM": "" });
+  }
+
+  if (!GDUsers)
+    return res.status(400).json({
+      status: 400,
+      message: "The selected status is not defined!",
+    });
+
+  res.status(200).json({ status: 200, data: GDUsers });
+};
+
 module.exports = {
   getUsersGMInfo,
   getUserGMInfo,
-  // createUserGMInfo,
+  getGMotherList,
   getTotalUser,
   updateUserGMInfo,
   deleteUserGMInfo,
   getUsersGDInfo,
   getUserGDInfo,
+  getUsersGDStatus,
   // createUserGDInfo,
   updateUserGDInfo,
   deleteUserGDInfo,

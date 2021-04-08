@@ -28,6 +28,7 @@ import EventsList from "./components/EventsList";
 import Stats from "./components/Stats";
 import SideBar from "../../components/sideBar/SideBar";
 import UserForm from "../../components/form /UserForm";
+import ChartRepresentation from "./components/ChartRepresentation";
 
 function AdminPage() {
   const dispatch = useDispatch();
@@ -35,37 +36,61 @@ function AdminPage() {
   let history = useHistory();
   const { pathname, search } = useLocation();
 
+  const jwt = localStorage.getItem("token");
   let [valueList, setValueList] = useState("default");
 
-  const getGMothersData = () => {
+  const url = "/api/users/";
+
+  const getGMothersData = async () => {
     dispatch(requestGMotherData());
 
-    fetch("/api/users/infoGMother")
-      .then((res) => res.json())
-      .then((json) => {
-        dispatch(receiveGMotherData(json.data));
-      })
-      .catch((error) => {
-        console.log("error in request", error);
-        dispatch(receiveGMotherDataError(error));
+    try {
+      const response = await fetch(`${url}infoGMother`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
+        },
       });
+      const responseBody = await response.json();
+
+      if (responseBody.status === 200) {
+        dispatch(receiveGMotherData(responseBody.data));
+      } else {
+        throw responseBody.message;
+      }
+    } catch (error) {
+      dispatch(receiveGMotherDataError(error));
+    }
   };
 
-  const getGDaughtersData = () => {
+  const getGDaughtersData = async () => {
     dispatch(requestGDaughterData());
 
-    fetch("/api/users/infoGDaughter")
-      .then((res) => res.json())
-      .then((json) => {
-        dispatch(receiveGDaughterData(json.data));
-      })
-      .catch((error) => {
-        console.log("error in request", error);
-        dispatch(receiveGDaughterDataError(error));
+    try {
+      const response = await fetch(`${url}infoGDaughter`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
+        },
       });
+
+      const responseBody = await response.json();
+
+      if (responseBody.status === 200) {
+        dispatch(receiveGDaughterData(responseBody.data));
+      } else {
+        throw responseBody.message;
+      }
+    } catch (error) {
+      dispatch(receiveGDaughterDataError(error));
+    }
   };
 
-  const getEventsData = () => {
+  const getEventsData = async () => {
     dispatch(requestEventData());
 
     fetch("/api/event")
@@ -77,6 +102,27 @@ function AdminPage() {
         console.log("error in request", error);
         dispatch(receiveEventError(error));
       });
+
+    // try {
+    //   const response = await fetch('/api/event', {
+    //     method: "GET",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json",
+    //       "x-auth-token": `${jwt}`,
+    //     },
+    //   });
+
+    //   const responseBody = await response.json();
+
+    //   if (responseBody.status === 200) {
+    //     dispatch(receiveEventData(responseBody.data));
+    //   } else {
+    //     throw responseBody.message;
+    //   }
+    // } catch (error) {
+    //   dispatch(receiveEventError(error));
+    // }
   };
 
   const handleNewUser = (user) => {
@@ -98,11 +144,13 @@ function AdminPage() {
 
   return (
     <Wrapper>
-      <SideBar handleNewUser={handleNewUser} setValueList={setValueList} />
+      <SideBar
+        handleNewUser={handleNewUser}
+        setValueList={setValueList}
+        valueList={valueList}
+      />
 
-      <UserForm />
-
-      <div style={{ flex: 3 }}>
+      <div style={{ flex: 3, overflowX: "scroll" }}>
         {valueList === "default" && (
           <>
             <h2>Stats List</h2>
@@ -147,6 +195,14 @@ function AdminPage() {
             <EventsList />
           </>
         )}
+
+        {valueList === "charts" && (
+          <>
+            <h2>Chart Representation</h2>
+
+            <ChartRepresentation />
+          </>
+        )}
       </div>
     </Wrapper>
   );
@@ -155,11 +211,13 @@ function AdminPage() {
 const Wrapper = styled.div`
   display: flex;
   margin: auto;
+  height: 80vh;
   color: rgba(40, 43, 71, 0.8);
   font-weight: 400;
+  overflow-x: hidden;
 
   & h2 {
-    margin-top: 4rem;
+    margin-top: 3rem;
     font-weight: 600;
     font-size: 1.5rem;
     text-align: center;

@@ -1,5 +1,4 @@
 import jwtDecode from "jwt-decode";
-
 const apiEndPoint = "/api/auth/login";
 const tokenKey = "token";
 
@@ -21,7 +20,7 @@ export function getCurrentUser() {
     const jwt = localStorage.getItem(tokenKey);
     return jwtDecode(jwt);
   } catch (error) {
-    console.log(error, "in getCurrentUseer");
+    console.log(error, "in getCurrentUser");
     return null;
   }
 }

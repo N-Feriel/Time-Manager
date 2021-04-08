@@ -17,6 +17,11 @@ export const receiveGDData = (data) => ({
   data,
 });
 
+export const receiveOneToData = (data) => ({
+  type: "RECEIVE_STAT_ONETOONE_DATA",
+  data,
+});
+
 export const updteStatData = (item, key, value) => ({
   type: "UPDATE_STAT_DATA",
   item,

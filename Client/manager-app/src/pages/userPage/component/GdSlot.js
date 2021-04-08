@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory, useLocation } from "react-router";
 import styled from "styled-components";
 import Button from "../../../components/button/Button";
-import OneToOneEvent from "../../registerEventPage/component/OneToOneEvent";
+import { themeVars } from "../../../utils/GlobalStyles";
+import { onSmallTabletMediaQuery } from "../../../utils/responsive";
+import OneToOneEvent from "../../eventPage/component/OneToOneEvent";
 
 function GdSlot({
   userGD,
@@ -13,7 +15,7 @@ function GdSlot({
 }) {
   const history = useHistory();
 
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
 
   // const [isTimeSubmited, setIsTimeSubmited] = useState(false);
 
@@ -38,15 +40,25 @@ function GdSlot({
   return (
     <Wrapper key={userGD._id}>
       <div>
-        <div style={{ flexDirection: "column" }}>
-          <strong>
-            {userGD.last_name} {userGD.first_name}
-          </strong>
+        <div className="info">
+          <div style={{ flexDirection: "column" }}>
+            <strong>
+              {userGD.last_name} {userGD.first_name}
+            </strong>
+          </div>
+          <div>{userGD.phone}</div>
         </div>
-        <div>{userGD.phone}</div>
 
         <div>
-          <Button onClick={() => handleGDDetails(userGD._id)}>Details</Button>
+          <Button
+            style={{
+              background: `${themeVars.lightPink}`,
+              color: `${themeVars.darkPink}`,
+            }}
+            onClick={() => handleGDDetails(userGD._id)}
+          >
+            Details
+          </Button>
 
           {!isArchived && (
             <Button onClick={() => handleAddTime()}>Add time</Button>
@@ -85,10 +97,16 @@ const Wrapper = styled.div`
     align-items: center;
   }
 
+  ${onSmallTabletMediaQuery()} {
+    & .info {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
   background: linear-gradient(
     to right bottom,
-    rgba(52, 73, 94, 0.8),
-    rgba(255, 255, 255, 0.1)
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.2)
   );
 
   padding: 0.5rem;

@@ -1,15 +1,17 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import Error from "../../../components/Error";
+import Loading from "../../../components/Loading";
 import GdSlot from "./GdSlot";
 
 function ArchivesGM() {
   const { status, GDUsers } = useSelector((state) => state.user);
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else if (status === "error") {
-    return <div>Error...</div>;
+    return <Error />;
   } else if (status === "idle") {
     const usersGDArchives = GDUsers.filter((user) => user.isActif === false);
 

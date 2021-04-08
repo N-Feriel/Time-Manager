@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { themeVars } from "../../utils/GlobalStyles";
 import {
-  onLargeDesktopMediaQuery,
+  onDesktopMediaQuery,
   onSmallTabletMediaQuery,
 } from "../../utils/responsive";
 
@@ -11,7 +11,7 @@ function Footer() {
   return (
     <Wrapper>
       <div>
-        <StyledLink to={"/user/me/addTime"}>Add Time</StyledLink>
+        <StyledLink to={"/user/me/addTime"}>Add time</StyledLink>
       </div>
       <div>
         <StyledLink to={"/user/me"}>Home</StyledLink>
@@ -25,10 +25,11 @@ function Footer() {
 }
 
 const Wrapper = styled.div`
+  display: none;
   ${onSmallTabletMediaQuery()} {
     display: flex;
     justify-content: space-evenly;
-    position: absolute;
+    position: fixed;
     color: white;
     font-weight: 600;
     bottom: 0;
@@ -41,10 +42,10 @@ const Wrapper = styled.div`
     );
 
     & div {
-      padding: 2rem;
+      padding: 1.25rem;
     }
     & div:hover {
-      padding: 2rem;
+      /* padding: 2rem; */
 
       background: linear-gradient(
         to right bottom,
@@ -56,10 +57,6 @@ const Wrapper = styled.div`
 
       border-top: solid 2px rgba(255, 255, 255);
     }
-  }
-
-  ${onLargeDesktopMediaQuery()} {
-    display: none;
   }
 `;
 

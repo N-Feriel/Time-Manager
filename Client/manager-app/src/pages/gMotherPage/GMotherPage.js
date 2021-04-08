@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router";
+import { useHistory, useLocation, useParams } from "react-router";
 import styled from "styled-components";
 import Button from "../../components/button/Button";
 import { themeVars } from "../../utils/GlobalStyles";
@@ -7,8 +7,10 @@ import { themeVars } from "../../utils/GlobalStyles";
 import UpdatePage from "../updatePage/UpdatePage";
 
 import breastfeeding from "../../assets/breastfeeding.jpg";
-import supportmom from "../../assets/support-mom.jpg";
 import bebePic from "../../assets/peau-bebe.jpg";
+import ModalC from "../../components/ModalC";
+import Error from "../../components/Error";
+import Loading from "../../components/Loading";
 
 function GMotherPage() {
   const { _id } = useParams();
@@ -19,10 +21,16 @@ function GMotherPage() {
   const [gDListAssigned, setGDListAssigned] = useState([]);
 
   const history = useHistory();
+
+  const { state } = useLocation();
   let url = "/api/users/infoGMother";
 
   const [isUpdate, setIsUpdate] = useState(false);
   const [gMData, setGMData] = useState([]);
+  const [userEvents, setUserEvents] = useState([]);
+
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [messageAl, setMessageAl] = useState("");
 
   const getUserData = async () => {
     try {
@@ -39,6 +47,31 @@ function GMotherPage() {
     } catch (error) {
       console.log(error);
       setStatusGMData("error");
+    }
+  };
+
+  const getUsertime = async () => {
+    try {
+      const url = `/api/event/totalTime/${_id}`;
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Accept-Charset": "utf-8",
+          "x-auth-token": `${jwt}`,
+        },
+      });
+
+      const responseBody = await response.json();
+
+      if (response.status === 200) {
+        setUserEvents(responseBody.data);
+      } else {
+        throw responseBody.message;
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -62,8 +95,8 @@ function GMotherPage() {
       if (responseBody.status === 201) {
         setGMData(responseBody.data);
         setStatusGMData("idle");
-
-        alert(`The user has change the state `);
+        setMessageAl(`The user has change the state `);
+        setIsOpen(true);
       } else {
         throw responseBody.message;
       }
@@ -72,6 +105,10 @@ function GMotherPage() {
       console.log(error);
     }
   };
+
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   const getGDAssigned = async () => {
     url = `/api/users/GDaugherList/${_id}`;
@@ -102,7 +139,7 @@ function GMotherPage() {
   const handleDelete = async () => {
     // not sure to use it or no??
 
-    alert(
+    setMessageAl(
       "Are you sure to delete the user-- it's permenate all data will be erease "
     );
 
@@ -132,14 +169,13 @@ function GMotherPage() {
   useEffect(() => {
     getUserData();
     getGDAssigned();
+    getUsertime();
   }, []);
 
-  console.log(gDListAssigned);
-
   if (statusGMData === "loading") {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else if (statusGMData === "error") {
-    return <div>Error...</div>;
+    return <Error />;
   } else if (statusGMData === "idle" && gMData) {
     return (
       <Main>
@@ -152,6 +188,15 @@ function GMotherPage() {
               {gMData.last_name} Details Page
             </h3>
           </div>
+
+          <ModalC
+            setIsOpen={setIsOpen}
+            closeModal={closeModal}
+            modalIsOpen={modalIsOpen}
+          >
+            <h4>{messageAl}</h4>
+            <Button onClick={closeModal}>close</Button>
+          </ModalC>
 
           <Container>
             <h4>General info:</h4>
@@ -172,50 +217,73 @@ function GMotherPage() {
             </div>
           </Container>
 
-          <Container style={{ background: `${themeVars.lightPink}` }}>
-            <h4>Total time </h4>
-            {/* fetch data to get numbers */}
-            <p>123</p>
+          <Container className={`${isUpdate ? "isOpen" : ""}`}>
+            <div
+              className="subOpen"
+              style={{
+                background: `${themeVars.lightPink}`,
+                borderRadius: "1rem",
+              }}
+            >
+              <h4>Total time </h4>
+              {userEvents.length > 0 ? (
+                <div style={{ display: "flex", flexWrap: "wrap" }}>
+                  {userEvents.map((eventType) => (
+                    <div key={eventType._id}>
+                      {eventType._id} : <strong>{eventType.total}</strong>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div>No total time Yet in your account</div>
+              )}
 
-            <h4>Number of GDaughers</h4>
-            {/* fetch data to get numbers */}
-            {gDListAssigned ? (
-              <>
-                <p>
-                  Actifs:
-                  {gDListAssigned.actifs
-                    ? gDListAssigned.actifs.length
-                    : " 0 "}{" "}
-                </p>
-                <p>
-                  Archived:
-                  {gDListAssigned.archives
-                    ? gDListAssigned.archives.length
-                    : " 0 "}{" "}
-                </p>
-              </>
+              {/* fetch data to get numbers */}
+              {gDListAssigned ? (
+                <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
+                  <h4>Number of GDaughers: </h4>
+                  <div style={{ marginLeft: "1rem" }}>
+                    Actives :{" "}
+                    <strong>
+                      {gDListAssigned.actifs
+                        ? gDListAssigned.actifs.length
+                        : " 0 "}{" "}
+                    </strong>
+                  </div>
+                  <div>
+                    Archived :{" "}
+                    <strong>
+                      {gDListAssigned.archives
+                        ? gDListAssigned.archives.length
+                        : " 0 "}{" "}
+                    </strong>
+                  </div>
+                </div>
+              ) : (
+                <p>No GDaughters assigned yet</p>
+              )}
+            </div>
+
+            {!isUpdate ? (
+              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                <Button onClick={() => setIsUpdate(!isUpdate)}>Update</Button>
+                <Button onClick={handleArchive}>
+                  {gMData.isActif ? "Archive" : "Activate"}
+                </Button>
+                <Button disabled onClick={handleDelete}>
+                  Delete
+                </Button>
+              </div>
             ) : (
-              <p>No GDaughters assigned yet</p>
+              <div style={{ flex: 3 }}>
+                <UpdatePage
+                  initialState={gMData}
+                  isUpdate={isUpdate}
+                  setIsUpdate={setIsUpdate}
+                />
+              </div>
             )}
           </Container>
-
-          {!isUpdate ? (
-            <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-              <Button onClick={() => setIsUpdate(!isUpdate)}>Update</Button>
-              <Button onClick={handleArchive}>
-                {gMData.isActif ? "Archive" : "Activate"}
-              </Button>
-              <Button disabled onClick={handleDelete}>
-                Delete
-              </Button>
-            </div>
-          ) : (
-            <UpdatePage
-              initialState={gMData}
-              isUpdate={isUpdate}
-              setIsUpdate={setIsUpdate}
-            />
-          )}
         </Wrapper>
       </Main>
     );
@@ -223,7 +291,7 @@ function GMotherPage() {
 }
 
 const Main = styled.div`
-  height: 100%;
+  /* height: fit-content; */
   margin-bottom: 4rem;
 `;
 
@@ -231,11 +299,11 @@ const Wrapper = styled.div`
   display: flex;
   justify-items: center;
   align-content: center;
-  min-height: 80vh;
+  min-height: 60vh;
 
   border-radius: 1rem;
   flex-direction: column;
-  margin: 2rem;
+  margin: 1rem;
 
   & button {
     width: fit-content;
@@ -284,10 +352,20 @@ const Container = styled.div`
   width: 90%;
   border-radius: 1rem;
   margin: 2rem auto 1rem auto;
-  padding: 2rem;
+  padding: 1rem 2rem;
+
+  &.isOpen {
+    display: flex;
+    padding: 1rem 2rem 1rem 1rem;
+    & .subOpen {
+      display: flex;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+  }
 
   & div {
-    padding: 10px;
+    padding: 5px 10px;
   }
 `;
 export default GMotherPage;

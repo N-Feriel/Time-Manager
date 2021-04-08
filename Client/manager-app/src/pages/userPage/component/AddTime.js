@@ -2,20 +2,19 @@ import React, { useState, useContext } from "react";
 import styled from "styled-components";
 
 import { UserContext } from "../../../components/UserContext";
-import { themeVars } from "../../../utils/GlobalStyles";
-import RegisterEventPage from "../../registerEventPage/RegisterEventPage";
+
+import RegisterEventPage from "../../eventPage/component/RegisterEventPage";
 
 function AddTime() {
   const { user } = useContext(UserContext);
-  console.log(user);
 
-  const [types, setTypes] = useState([
+  const types = [
     { _id: "Vulonteer", name: "Vulonteer", text: "VOLUNTEER" },
     { _id: "Training", name: "Training", text: "TRAINING" },
     { _id: "Facebook", name: "Facebook", text: "FACEBOOK" },
     { _id: "OneToOne", name: "OneToOne", text: "GDaughter" },
     { _id: "Others", name: "Others", text: "OTHERS" },
-  ]);
+  ];
 
   return (
     <Wrapper>

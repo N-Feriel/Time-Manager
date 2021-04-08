@@ -1,26 +1,30 @@
-import { concat, keys } from "lodash";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
-import themeVars from "../../../utils/GlobalStyles";
-
-import { receiveEventData } from "../../../store/reducers/Events/actions";
 import {
   requestStatData,
   receiveStatData,
   receiveStatDataError,
   receiveGMData,
   receiveGDData,
+  receiveOneToData,
 } from "../../../store/reducers/Stat/actions";
+import Loading from "../../../components/Loading";
+import Error from "../../../components/Error";
 
 function Stats({ setValueList }) {
-  const { status, stats, StatGDaughters, StatMothers } = useSelector(
-    (state) => state.stat
-  );
+  const {
+    status,
+    stats,
+    StatGDaughters,
+    StatMothers,
+    statOneToOne,
+  } = useSelector((state) => state.stat);
 
   const jwt = localStorage.getItem("token");
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
 
   const getStats = async () => {
     dispatch(requestStatData());
@@ -78,6 +82,38 @@ function Stats({ setValueList }) {
     }
   };
 
+  const getOneToOneStats = async () => {
+    dispatch(requestStatData());
+
+    try {
+      const url = `/api/event/oneToOne/totalTime`;
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Accept-Charset": "utf-8",
+          "x-auth-token": `${jwt}`,
+        },
+      });
+
+      const responseBody = await response.json();
+
+      if (response.status === 200) {
+        dispatch(receiveOneToData(responseBody.data));
+      } else {
+        throw responseBody.message;
+      }
+    } catch (error) {
+      dispatch(receiveStatDataError());
+      console.log(error);
+    }
+  };
+
+  const handleDetails = () => {
+    setIsOpen(!isOpen);
+    // console.log("onetoOne", statOneToOne);
+  };
   const getGDStats = async () => {
     dispatch(requestStatData());
 
@@ -110,12 +146,13 @@ function Stats({ setValueList }) {
     getStats();
     getGMStats();
     getGDStats();
+    getOneToOneStats();
   }, []);
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else if (status === "error") {
-    return <div>Error...</div>;
+    return <Error />;
   } else if (status === "idle") {
     return (
       <Container>
@@ -126,7 +163,7 @@ function Stats({ setValueList }) {
               {StatMothers.map((StatGM, i) => {
                 return (
                   <div className="rStat" key={i}>
-                    {StatGM._id === true ? "Actifs" : "Archives"} :
+                    {StatGM._id === true ? "Actives" : "Archives"} :
                     <strong> {StatGM.count}</strong>
                   </div>
                 );
@@ -142,7 +179,7 @@ function Stats({ setValueList }) {
               {StatGDaughters.map((StatGD, i) => {
                 return (
                   <div className="rStat" key={i}>
-                    {StatGD._id === true ? "Actifs" : "Archives"} :
+                    {StatGD._id === true ? "Actives" : "Archives"} :
                     <strong> {StatGD.count}</strong>
                   </div>
                 );
@@ -155,19 +192,57 @@ function Stats({ setValueList }) {
 
         {stats && (
           <ul>
-            <h3>Total Time</h3>
+            <h3>Total Time (mn)</h3>
             <div style={{ display: "flex", flexWrap: "wrap" }}>
               {stats.map((stat) => {
                 return (
                   <li key={stat._id} style={{ padding: "10px" }}>
-                    {stat._id} : <strong> {stat.total}</strong>
+                    {stat._id === "OneToOne" ? (
+                      <>
+                        <div
+                          onClick={handleDetails}
+                          style={{
+                            cursor: "pointer",
+                          }}
+                        >
+                          {stat._id} : <strong> {stat.total}</strong>
+                        </div>
+                        {isOpen && (
+                          <div className="detailsOneToOne">
+                            {statOneToOne && (
+                              <>
+                                {statOneToOne.map((statOne) => {
+                                  return (
+                                    <div
+                                      key={statOne._id}
+                                      style={{ margin: "10px 2px" }}
+                                    >
+                                      {statOne._id}:{" "}
+                                      <strong>{statOne.total}</strong>
+                                    </div>
+                                  );
+                                })}
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div>
+                        {stat._id} : <strong> {stat.total}</strong>
+                      </div>
+                    )}
                   </li>
                 );
               })}
             </div>
 
+            <li className="first" onClick={() => setValueList("charts")}>
+              ...Chart
+            </li>
+
             <li className="last" onClick={() => setValueList("details")}>
-              ...more
+              ...More
             </li>
           </ul>
         )}
@@ -178,23 +253,24 @@ function Stats({ setValueList }) {
 
 const Container = styled.div`
   display: flex;
-  margin: 4rem;
+  margin: auto 4rem 2rem 4rem;
   justify-content: space-around;
   background: linear-gradient(
     to left top,
     rgba(246, 196, 196, 0.12),
     rgba(97, 103, 160, 0.512)
   );
+  flex-wrap: wrap;
   border-radius: 1.5rem;
 
   & ul {
     background: linear-gradient(
-      to right bottom,
+      to left top,
       rgba(255, 255, 255, 0.5),
       rgba(255, 255, 255, 0.2)
     );
     margin: 2rem;
-    padding: 1rem;
+    padding: 2rem;
     text-align: center;
     position: relative;
     display: flex;
@@ -209,6 +285,20 @@ const Container = styled.div`
     text-align: center;
   }
 
+  & .detailsOneToOne {
+    margin: 1rem 0.5rem;
+    box-shadow: 6px 6px 20px rgba(122, 122, 122, 0.5);
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 1rem;
+
+    background: rgba(246, 196, 196, 0.2);
+
+    z-index: 4;
+  }
+
   & li {
     margin: 1rem;
     box-shadow: 6px 6px 20px rgba(122, 122, 122, 0.212);
@@ -217,19 +307,30 @@ const Container = styled.div`
       rgba(255, 255, 255, 0.6),
       rgba(255, 255, 255, 0.2)
     );
-    width: 40%;
+    width: max(40%, 150px);
   }
 
+  & .first {
+    align-self: flex-start;
+    color: white;
+  }
   & .last {
     align-self: flex-end;
+    color: violet;
+  }
+
+  & .last,
+  .first {
+    /* align-self: flex-end; */
     position: absolute;
     bottom: 20px;
     background: none;
-    color: white;
+    /* color: white; */
     width: fit-content;
   }
 
-  & .last:hover {
+  & .last:hover,
+  .first:hover {
     background: linear-gradient(
       to right bottom,
       rgba(255, 255, 255, 0.8),
@@ -249,7 +350,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
-    margin: 2rem;
+    margin: 1.5rem;
 
     & .rStat {
       box-shadow: 6px 6px 20px rgba(122, 122, 122, 0.212);

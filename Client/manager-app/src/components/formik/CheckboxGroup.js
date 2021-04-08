@@ -3,10 +3,12 @@ import React from "react";
 import TextError from "./TextError";
 
 function CheckboxGroup(props) {
-  const { label, name, options, ...rest } = props;
+  const { label, name, isCheckBox, options, ...rest } = props;
   return (
-    <div className="form-cont">
-      <label htmlFor={name}>{label}</label>
+    <div className={`form-cont ${isCheckBox ? "checkGroup" : ""}`}>
+      <label htmlFor={name}>
+        <strong>{label}</strong>
+      </label>
       <Field name={name}>
         {({ field }) => {
           return options.map((option) => {

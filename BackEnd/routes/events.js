@@ -14,6 +14,7 @@ const {
   getTotalEventType,
   getTotalEventTypePerUser,
   getTotalTime,
+  getTotalOneToOne,
 } = require("./handlers/handelersEvent");
 
 router.get("/", getEvents);
@@ -28,5 +29,6 @@ router.patch("/:eventId", updateEvent);
 router.delete("/:eventId", deleteEvent);
 
 router.get("/oneToOne/totalTime/:gdId", auth, getTotalTimeOneToOne);
+router.get("/oneToOne/totalTime", auth, getTotalOneToOne);
 
 module.exports = router;

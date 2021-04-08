@@ -5,6 +5,9 @@ import Button from "../components/button/Button";
 
 import bebePic from "../assets/peau-bebe.jpg";
 import { themeVars } from "../utils/GlobalStyles";
+import { FaFacebookF, FaAddressCard } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
+import { onSmallTabletMediaQuery } from "../utils/responsive";
 
 function HomePage() {
   const history = useHistory();
@@ -13,10 +16,15 @@ function HomePage() {
       <h2>Welecome To Time Manager App</h2>
 
       <Wrapper>
-        {/* <Main></Main> */}
         <div className="details">
           <h3>Please Select User type to Login </h3>
-          <div style={{ display: "flex", alignSelf: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              margin: "auto",
+            }}
+          >
             <Button
               style={{ background: `${themeVars.darkPink}` }}
               onClick={() => history.push("/admin")}
@@ -36,15 +44,21 @@ function HomePage() {
       <div className="contact">
         <h4>Contact: </h4>
         <div className="info">
-          <strong> Address: </strong>
+          <strong>
+            <FaAddressCard size="25px" />
+          </strong>
           78 rue St-Louis, LeMoyne, QC, J4R 2L4
         </div>
         <div className="info">
-          <strong>Email: </strong>
+          <strong>
+            <MdEmail size="25px" />
+          </strong>
           lamereaboire@gmail.com
         </div>
         <div className="info">
-          <strong>FaceBook: </strong>
+          <strong>
+            <FaFacebookF size="25px" />
+          </strong>
           http://facebook.com/lamereaboire
         </div>
       </div>
@@ -52,25 +66,16 @@ function HomePage() {
   );
 }
 
-const Main = styled.div`
-  background-image: url(${bebePic});
-  background-repeat: no-repeat;
-  background-size: cover;
-  flex: 1;
-  height: 50vh;
-  z-index: 6;
-  padding: 0;
-  margin: 0;
-`;
 const Wrapper = styled.div`
   display: flex;
-  height: 50vh;
+  height: 60vh;
   background-image: url(${bebePic});
   background-repeat: no-repeat;
   background-size: cover;
   & Button {
+    font-size: 20px;
     color: white;
-    width: 100px;
+    width: 150px;
   }
 
   & .details {
@@ -87,27 +92,56 @@ const Wrapper = styled.div`
   & h3 {
     color: ${themeVars.violet};
     text-align: center;
+    margin: auto;
+  }
+
+  ${onSmallTabletMediaQuery()} {
+    height: 50vh;
+
+    & Button {
+      font-size: 16px;
+      width: 100px;
+    }
   }
 `;
 
 const Container = styled.div`
-  padding: 1rem 0;
+  padding: 20px 0 0 0;
+
+  ${onSmallTabletMediaQuery()} {
+    margin-bottom: 5rem;
+
+    & h2 {
+      min-height: 3em !important;
+      margin: auto;
+    }
+  }
 
   & h4 {
     color: ${themeVars.violet};
-    padding: 1rem 0 0 3rem;
+    padding: 5px;
   }
   & .contact {
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+    height: fit-content;
+    padding-left: 1rem;
+    background: linear-gradient(
+      to right bottom,
+      rgba(255, 255, 255, 0.4),
+      rgba(255, 255, 255, 0.2)
+    );
 
     & strong {
-      padding: 1rem;
+      padding: 0 10px;
     }
   }
   & .info {
-    padding: 0.5rem;
+    padding: 5px;
+    display: flex;
+    align-items: center;
   }
 `;
 

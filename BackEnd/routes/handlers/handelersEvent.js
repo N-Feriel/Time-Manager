@@ -263,6 +263,36 @@ const getTotalTimeOneToOne = async (req, res) => {
   });
 };
 
+const getTotalOneToOne = async (req, res) => {
+  let totalTime = await Event.aggregate([
+    { $match: { type: { $all: ["OneToOne"] } } },
+    {
+      $group: {
+        _id: "$typeOneToOne",
+        // events: {
+        //   $push: {
+        //     name: "$name",
+        //     eventDate: "$eventDate",
+        //     time: "$time",
+        //     typeOneToOne: "$typeOneToOne",
+        //   },
+        // },
+        total: { $sum: "$time" },
+      },
+    },
+  ]);
+
+  if (!totalTime)
+    return res
+      .status(404)
+      .json({ status: 400, message: "can not calculate the total time" });
+
+  res.status(200).json({
+    status: 200,
+    data: totalTime,
+  });
+};
+
 module.exports = {
   getEvents,
   getEvent,
@@ -274,4 +304,5 @@ module.exports = {
   getTotalEventType,
   getTotalEventTypePerUser,
   getTotalTime,
+  getTotalOneToOne,
 };

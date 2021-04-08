@@ -5,6 +5,7 @@ const initialState = {
 
   StatMothers: [],
   StatGDaughters: [],
+  statOneToOne: [],
 
   status: "idle",
   error: null,
@@ -23,6 +24,13 @@ export default function statReducer(state = initialState, action) {
         ...state,
         status: "idle",
         stats: [...action.data],
+      };
+    }
+    case "RECEIVE_STAT_ONETOONE_DATA": {
+      return {
+        ...state,
+        status: "idle",
+        statOneToOne: [...action.data],
       };
     }
 

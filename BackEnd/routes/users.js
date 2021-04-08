@@ -16,6 +16,8 @@ const {
   getTotalUser,
   getUsersGDAssignTo,
   getGDAssignToData,
+  getUsersGDStatus,
+  getGMotherList,
 } = require("./handlers/handlersInfo");
 
 router.get("/", getUsers);
@@ -24,16 +26,18 @@ router.get("/me", auth, getUser);
 router.post("/", [auth, admin], createUser);
 
 // Create and update the GMother Info DataBase
-router.get("/infoGMother", getUsersGMInfo);
+router.get("/infoGMother", auth, getUsersGMInfo);
 router.get("/stat/:userType", getTotalUser);
 router.get("/infoGMother/:userId", getUserGMInfo);
-// router.post("/infoGMother", createUserGMInfo);
+router.get("/gMotherList", auth, getGMotherList);
 router.patch("/infoGMother/user", updateUserGMInfo);
-router.delete("/infoGMother/:userId", deleteUserGMInfo);
+router.delete("/infoGMother/:userId", [auth, admin], deleteUserGMInfo);
 
 // Create and update the GDaughter Info DataBase
 router.get("/infoGDaughter", getUsersGDInfo);
-router.get("/infoGDaughter/:userId", getUserGDInfo);
+router.get("/status/GDaughter/:statusType", getUsersGDStatus);
+
+router.get("/infoGDaughter/:userId", auth, getUserGDInfo);
 router.get("/GDaugherList", auth, getUsersGDAssignTo);
 router.get("/GDaugherList/:userId", auth, getGDAssignToData);
 

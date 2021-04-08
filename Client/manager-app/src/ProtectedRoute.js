@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Redirect, useLocation } from "react-router";
 import { getCurrentUser } from "./services/authService";
@@ -7,9 +7,7 @@ const ProtectedRoute = (props, ...rest) => {
   const Component = props.component;
   const isAuthenticated = getCurrentUser(); // your auth from the store / db
 
-  //   console.log(props.authed, "protected route");
-
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
 
   const location = {
     pathname: "/login",

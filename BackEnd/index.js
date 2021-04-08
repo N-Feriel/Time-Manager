@@ -16,6 +16,7 @@ const auth = require("./routes/auth");
 const events = require("./routes/events");
 const error = require("./middleware/error");
 const mailSend = require("./routes/mailSend");
+const notification = require("./routes/notifications");
 
 app.use(express.json());
 // app.use(morgan('combined', { stream: logger.stream }));
@@ -39,6 +40,7 @@ app.use("/api/users", users);
 app.use("/api/auth", auth);
 app.use("/api/event", events);
 app.use("/api/send", mailSend);
+app.use("/api/notification", notification);
 
 app.use(error);
 

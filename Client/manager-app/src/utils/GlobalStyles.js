@@ -26,13 +26,13 @@ html,
 body{
     padding: 0;
     margin: 0;
-    height: 100vh;
+    min-height: 80vh; 
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
     Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
     /* display: grid; */
     //place-content: center;
-    scroll-behavior: smooth;
-    overflow: hidden; 
+    /* scroll-behavior: auto;
+    overflow: hidden;  */
     }
 
 * {
@@ -48,15 +48,14 @@ body{
 
 }
 
-
 & h2{
     text-align: center;
     font-size: 1.5rem;
     margin: 2rem;
     color: ${themeVars.darkBlue};
     opacity: 0.8;
-}
-
+} 
+/* 
 main {
     padding: 5rem 0;
     flex: 1;
@@ -71,23 +70,16 @@ code {
     border-radius: 5px;
     padding: 0.75rem;
     font-family: Menlo, Monaco, Lucida Console, Courier New, monospace;
-    }
+    } */
 
 
 
-.container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    //justify-content: center;
-    align-items: center;
-    }
 
 ol, ul {
     list-style: none;
     margin: 0;
     padding: 0;
     
-    }
+    } 
 
 `;

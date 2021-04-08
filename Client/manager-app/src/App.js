@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 
 import GlobalStyles from "./utils/GlobalStyles";
 import {
-  device,
-  onLargeDesktopMediaQuery,
+  onDesktopMediaQuery,
   onSmallTabletMediaQuery,
 } from "./utils/responsive";
-import { useMediaQuery } from "react-responsive";
-
-import { getCurrentUser } from "./services/authService";
 
 import NavBar from "./components/navBar/NavBar";
 import HomePage from "./pages/HomePage";
@@ -20,7 +16,7 @@ import AdminPage from "./pages/adminPage/AdminPage";
 import RegisterPage from "./pages/registerPage/RegisterPage";
 import GMotherPage from "./pages/gMotherPage/GMotherPage";
 import GDaughterPage from "./pages/gDaughterPage/GDaughterPage";
-import RegisterEventPage from "./pages/registerEventPage/RegisterEventPage";
+import RegisterEventPage from "./pages/eventPage/component/RegisterEventPage";
 import EventPage from "./pages/eventPage/EventPage";
 import Stats from "./pages/adminPage/components/Stats";
 import UserPage from "./pages/userPage/UserPage";
@@ -28,52 +24,10 @@ import ProtectedRoute from "./ProtectedRoute";
 import Footer from "./components/footer/Footer";
 import ArchivesGM from "./pages/userPage/component/ArchivesGM";
 import AddTime from "./pages/userPage/component/AddTime";
+import { UserContext } from "./components/UserContext";
 
 function App() {
-  const initialDataM = {
-    email: "",
-    first_name: "",
-    last_name: "",
-    password: "123456",
-    phone: Number,
-    address: {
-      city: "",
-      zipCode: "",
-      street: "",
-      state: "",
-    },
-    isMember: Boolean,
-    languages: [],
-    origin: "",
-    startDate: "",
-    training: [],
-    isActif: Boolean,
-  };
-
-  const initialDataD = {
-    email: "",
-    first_name: "",
-    last_name: "",
-    phone: Number,
-    address: {
-      city: "",
-      zipCode: "",
-      street: "",
-      state: "",
-    },
-    isMember: Boolean,
-    origin: "",
-    dueDate: "",
-    infoParent: {
-      isContact: Boolean,
-      name: "",
-    },
-    assignTo: {
-      isAssign: Boolean,
-      assignGM: "",
-    },
-    isActif: Boolean,
-  };
+  const { user } = useContext(UserContext);
 
   return (
     <BrowserRouter>
@@ -96,17 +50,26 @@ function App() {
             component={AdminPage}
           />
 
-          <Route exact path="/register/gMother">
-            <RegisterPage initialState={initialDataM} />
-          </Route>
+          <ProtectedRoute
+            exact
+            path="/register/gMother"
+            authed={true}
+            component={RegisterPage}
+          />
 
-          <Route exact path="/register/gDaughter">
-            <RegisterPage initialState={initialDataD} isGDaughter />
-          </Route>
+          <ProtectedRoute
+            exact
+            path="/register/gDaughter"
+            authed={true}
+            isGDaughter
+            component={RegisterPage}
+          />
 
-          <Route exact path="/register/event">
-            <RegisterEventPage />
-          </Route>
+          <ProtectedRoute
+            exact
+            path="/register/event"
+            component={RegisterEventPage}
+          />
 
           <Route exact path="/infoMother/:_id">
             <GMotherPage />
@@ -114,15 +77,25 @@ function App() {
           <Route exact path="/infoDaughter/:_id">
             <GDaughterPage />
           </Route>
+
+          <ProtectedRoute exact path="/stat" authed={true} component={Stats} />
+
           <Route exact path="/event/:_id">
             <EventPage />
           </Route>
 
-          <Route exact path="/stat">
-            <Stats />
-          </Route>
+          {/* <ProtectedRoute
+            exact
+            path="/infoDaughter/:_id"
+            component={GDaughterPage}
+          /> */}
 
-          <ProtectedRoute exact path="/user/me" component={UserPage} />
+          <ProtectedRoute
+            exact
+            path="/user/me"
+            user={user}
+            component={UserPage}
+          />
 
           <ProtectedRoute
             exact
@@ -135,23 +108,31 @@ function App() {
       </MainDesk>
       <Circle1></Circle1>
       <Circle2></Circle2>
+
       <Footer />
     </BrowserRouter>
   );
 }
 
 const MainDesk = styled.div`
+  overflow-y: auto;
+  max-height: fit-content;
   ${onSmallTabletMediaQuery()} {
-    overflow-y: auto;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    white-space: nowrap;
+    font-size: 14px;
   }
-  ${onLargeDesktopMediaQuery()} {
-    min-height: 80vh;
+  ${onDesktopMediaQuery()} {
+    /* min-height: 80vh; */
+    /* overflow-y: auto; */
+    position: relative;
     background: white;
-    width: 70%;
-    max-height: fit-content;
+    width: 80%;
+    /* max-height: fit-content; */
     justify-self: center;
     align-self: center;
-    margin: auto;
+    margin: 0 auto 4rem auto;
     background: linear-gradient(
       to right bottom,
       rgba(255, 255, 255, 0.7),
@@ -161,12 +142,12 @@ const MainDesk = styled.div`
     z-index: 3;
     backdrop-filter: blur(2rem);
     font-family: "Poppins", sans-serif;
-    /* margin-top: 48px; */
+    margin-top: 48px;
   }
 `;
 
 const Circle1 = styled.div`
-  ${onLargeDesktopMediaQuery()} {
+  ${onDesktopMediaQuery()} {
     background: white;
     background: linear-gradient(
       to right bottom,
@@ -176,14 +157,14 @@ const Circle1 = styled.div`
     position: absolute;
     width: 10rem;
     height: 10rem;
-    top: 10%;
-    right: 10%;
+    top: 8%;
+    right: 5%;
     border-radius: 50%;
   }
 `;
 
 const Circle2 = styled.div`
-  ${onLargeDesktopMediaQuery()} {
+  ${onDesktopMediaQuery()} {
     background: white;
     background: linear-gradient(
       to right bottom,
@@ -191,8 +172,8 @@ const Circle2 = styled.div`
       rgba(255, 255, 255, 0.3)
     );
     position: absolute;
-    bottom: 5%;
-    left: 7%;
+    bottom: 7px;
+    left: 5%;
     width: 10rem;
     height: 10rem;
     border-radius: 50%;

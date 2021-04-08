@@ -1,28 +1,23 @@
 export const requestGMotherData = () => ({
-    type: "REQUEST_GMOTHER_DATA",
+  type: "REQUEST_GMOTHER_DATA",
 });
 
 export const receiveGMotherData = (data) => ({
-    type: "RECEIVE_GMOTHER_DATA",
-    data,
-    
+  type: "RECEIVE_GMOTHER_DATA",
+  data,
 });
 
-export const updteGMotherData =(item, key, value) =>({
-    type: "UPDATE_GMOTHER_DATA",
-    item, 
-    key,
-    value
-})
+export const updteGMotherData = (item) => ({
+  type: "UPDATE_GMOTHER_DATA",
+  item,
+});
 
 export const removeGMother = (item) => ({
-    type: "REMOVE_GMOTHER",
-    item,
+  type: "REMOVE_GMOTHER",
+  item,
 });
 
-
-
 export const receiveGMotherDataError = (error) => ({
-    type: "RECEIVE_GMOTHER_DATA_ERROR",
-    error,
+  type: "RECEIVE_GMOTHER_DATA_ERROR",
+  error,
 });

@@ -1,34 +1,43 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useLocation, useParams } from "react-router";
+import { useHistory, useLocation, useParams } from "react-router";
 import styled from "styled-components";
 import { UserContext } from "../../components/UserContext";
-import RegisterPage from "../registerPage/RegisterPage";
-
-import { updateUserData } from "../../store/reducers/user/actions";
 
 import bebeImg from "../../assets/peauapeau.webp";
 import bebePic from "../../assets/picture-bebe.jpg";
 import Button from "../../components/button/Button";
 import { useDispatch } from "react-redux";
-import OneToOneEvent from "../registerEventPage/component/OneToOneEvent";
+import OneToOneEvent from "../eventPage/component/OneToOneEvent";
 import UpdatePage from "../updatePage/UpdatePage";
+import { onSmallTabletMediaQuery } from "../../utils/responsive";
+import ModalC from "../../components/ModalC";
+import { getgMotherList } from "../../services/apiHelp";
+import Error from "../../components/Error";
+import Loading from "../../components/Loading";
+import TextError from "../../components/formik/TextError";
 function GDaughterPage() {
   const { _id } = useParams();
 
   const [statusGDData, setStatusGDData] = useState("loading");
   const [addTime, setAddTime] = useState(false);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const { user } = useContext(UserContext);
   const [errors, setErrors] = useState("");
 
+  // const [list, setList] = useState([]);
+
   const [isUpdate, setIsUpdate] = useState(false);
   const [gDData, setGDData] = useState([]);
 
-  const [totalTime, getTotalTime] = useState(null);
+  const [totalTime, getTotalTime] = useState(0);
+  const history = useHistory();
 
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
+
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [messageAl, setMessageAl] = useState("");
 
   const location = {
     pathname: `/register/${user}`,
@@ -40,7 +49,14 @@ function GDaughterPage() {
 
   const getUserData = async () => {
     try {
-      const response = await fetch(`/api/users/infoGDaughter/${_id}`);
+      const response = await fetch(`/api/users/infoGDaughter/${_id}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Accept-Charset": "utf-8",
+          "x-auth-token": `${jwt}`,
+        },
+      });
 
       const responseBody = await response.json();
 
@@ -72,14 +88,36 @@ function GDaughterPage() {
       const responseBody = await response.json();
 
       if (response.status === 200) {
-        getTotalTime(responseBody.total[0].total);
+        if (responseBody.total[0]) {
+          getTotalTime(responseBody.total[0].total);
+        }
       } else {
         throw responseBody.message;
       }
     } catch (error) {
-      console.log(error);
+      setErrors(error);
     }
   };
+
+  // const getList = async () => {
+  //   try {
+  //     const response = await getgMotherList();
+
+  //     const responseBody = await response.json();
+  //     if (responseBody.status === 200) {
+  //       setList(responseBody.data[0].listUsers);
+  //     } else {
+  //       throw responseBody.message;
+  //     }
+  //   } catch (error) {
+  //     setErrors(error);
+  //   }
+  // };
+
+  // let listGM = list.map((GM) => ({
+  //   value: `${GM.first_name} ${GM.last_name}`,
+  //   key: `${GM._id}`,
+  // }));
 
   const handleArchive = async () => {
     const url = "/api/users/infoGDaughter/";
@@ -102,9 +140,8 @@ function GDaughterPage() {
 
       if (responseBody.status === 201) {
         setGDData(responseBody.data);
-        console.log("update");
-
-        alert(`The user has change the state `);
+        setMessageAl("The user has change the state ");
+        setIsOpen(true);
       } else {
         throw responseBody.message;
       }
@@ -119,7 +156,8 @@ function GDaughterPage() {
 
   const timeSubmitedCallback = () => {
     setAddTime(false);
-    alert("time Submited");
+    setMessageAl("Time Submited");
+    setIsOpen(true);
   };
 
   useEffect(() => {
@@ -127,14 +165,19 @@ function GDaughterPage() {
     getUsertime(_id);
   }, []);
 
+  function closeModal() {
+    setIsOpen(false);
+    history.push(location.state.redirectTo);
+  }
+
   useEffect(() => {
     getUsertime(_id);
   }, [addTime]);
 
   if (statusGDData === "loading") {
-    return <div>Loading...</div>;
+    return <Loading />;
   } else if (statusGDData === "error") {
-    return <div>Error...</div>;
+    return <Error />;
   } else if (statusGDData === "idle" && gDData) {
     const hasAccess = gDData.assignTo.assignGM === user._id;
 
@@ -142,16 +185,26 @@ function GDaughterPage() {
       <Main>
         <Header></Header>
         <Wrapper>
-          <div style={{ display: "flex" }}>
+          <div className="head">
             <Circle1></Circle1>
 
-            <div className="head">
+            <ModalC
+              setIsOpen={setIsOpen}
+              closeModal={closeModal}
+              modalIsOpen={modalIsOpen}
+            >
+              <h4>{messageAl}</h4>
+              <Button onClick={closeModal}>close</Button>
+            </ModalC>
+
+            <div style={{ flex: 3, marginTop: "-3rem" }}>
               <h3>GDaughter Page</h3>
               {!isUpdate && (
-                <Button onClick={() => setIsUpdate(!isUpdate)}>Update</Button>
+                <Button onClick={() => setIsUpdate(!isUpdate)}>UPDATE</Button>
               )}
             </div>
           </div>
+          <TextError>{errors}</TextError>
           <Container>
             <div>
               <strong>Name : </strong>
@@ -175,7 +228,7 @@ function GDaughterPage() {
 
             <div>
               <strong>Total Time : </strong>
-              {totalTime}
+              {totalTime || 0} mn
             </div>
           </Container>
           <div style={{ display: "flex", justifyContent: "space-around" }}>
@@ -199,25 +252,20 @@ function GDaughterPage() {
           {isUpdate && (
             <UpdatePage
               initialState={gDData}
+              setGDData={setGDData}
               isGDaughter
               isUpdate={isUpdate}
               setIsUpdate={setIsUpdate}
+              // listGM={listGM}
             />
           )}
 
-          {
-            addTime && (
-              // (isTimeSubmited ? (
-              //   <div> timeSave </div>
-              // ) : (
-              <OneToOneEvent
-                userGD={gDData}
-                timeSubmitedCallback={timeSubmitedCallback}
-              />
-            )
-            // )
-            // )
-          }
+          {addTime && (
+            <OneToOneEvent
+              userGD={gDData}
+              timeSubmitedCallback={timeSubmitedCallback}
+            />
+          )}
         </SubContainer>
       </Main>
     );
@@ -226,7 +274,9 @@ function GDaughterPage() {
 
 const Main = styled.div`
   height: 100%;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
+
+  width: 100%;
 `;
 
 const Wrapper = styled.div`
@@ -235,9 +285,24 @@ const Wrapper = styled.div`
 
   & .head {
     display: flex;
-    justify-content: space-between;
-    flex: 3;
+    ${onSmallTabletMediaQuery()} {
+      /* flex-wrap: wrap; */
+      width: 100%;
+
+      & h3 {
+        font-size: 1.1rem;
+      }
+      & button {
+        margin-right: -2rem;
+      }
+    }
+
     margin-top: -2rem;
+    div {
+      /* flex: 3; */
+      justify-content: space-between;
+      display: flex;
+    }
   }
   & h3 {
     color: white;
@@ -258,9 +323,12 @@ const Wrapper = styled.div`
 `;
 
 const Header = styled.div`
+  ${onSmallTabletMediaQuery()} {
+    height: 15vh;
+  }
   background-image: url(${bebeImg});
   width: 100%;
-  height: 20vh;
+  height: 25vh;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -272,6 +340,12 @@ const Header = styled.div`
 `;
 
 const Circle1 = styled.div`
+  ${onSmallTabletMediaQuery()} {
+    width: 5rem;
+    height: 5rem;
+    margin-top: -5rem;
+    margin-left: -2rem;
+  }
   background: white;
   background-repeat: no-repeat;
   background-size: cover;
@@ -282,32 +356,37 @@ const Circle1 = styled.div`
     rgba(255, 255, 255, 0.8),
     rgba(255, 255, 255, 0.3)
   );
-  width: 10rem;
-  height: 10rem;
-  text-align: center;
+  width: 8rem;
+  height: 8rem;
+  /* text-align: center; */
   border-radius: 50%;
   margin-top: -7rem;
 `;
 
 const Container = styled.div`
+  overflow-y: scroll;
+
   background: linear-gradient(
     to left top,
     rgba(249, 231, 159, 0.8),
     rgba(255, 255, 255, 0.1)
   );
-  width: 90%;
+  /* width: 90%; */
   border-radius: 1rem;
   margin: 2rem auto 1rem auto;
   padding: 2rem;
 
   & div {
-    padding: 10px;
+    padding: 8px;
   }
 `;
 
 const SubContainer = styled.div`
-  margin-bottom: 5rem;
-  overflow-y: scroll;
+  margin: 2rem auto 6rem auto;
+  padding: 1rem;
+
+  width: 90%;
+  border-radius: 1rem;
 `;
 
 export default GDaughterPage;

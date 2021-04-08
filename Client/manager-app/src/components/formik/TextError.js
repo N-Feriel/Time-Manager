@@ -7,7 +7,9 @@ function TextError(props) {
 }
 
 const Container = styled.div`
-  color: ${themeVars.middleRedColor};
+  display: flex;
+  width: 90%;
+  color: red;
 `;
 
 export default TextError;

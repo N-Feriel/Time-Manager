@@ -1,15 +1,16 @@
 export const size = {
-    smallPhone: 320,
-    tablet: 768,
-    desktop: 1024,
-    largeDesktop: 1440,
+  smallPhone: 320,
+  tablet: 768,
+  desktop: 1024,
+  largeDesktop: 1440,
 };
 
 export const device = {
-    smallPhone: `(max-width: ${size.smallPhone}px)`,
-    smallTablet: `(max-width: ${size.tablet}px)`,
-    tablet: `(max-width: ${size.desktop}px)`,
-    largeDesktop: `(min-width: ${size.largeDesktop}px)`,
+  smallPhone: `(max-width: ${size.smallPhone}px)`,
+  smallTablet: `(max-width: ${size.tablet}px)`,
+  tablet: `(max-width: ${size.desktop}px)`,
+  desktop: `(max-width: ${size.largeDesktop}px)`,
+  largeDesktop: `(min-width: ${size.largeDesktop}px)`,
 };
 
 export const onSmallPhoneMediaQuery = () => `
@@ -20,6 +21,9 @@ export const onSmallTabletMediaQuery = () => `
 `;
 export const onTabletMediaQuery = () => `
   @media ${device.tablet}
+`;
+export const onDesktopMediaQuery = () => `
+  @media ${device.largeDesktop}
 `;
 export const onLargeDesktopMediaQuery = () => `
   @media ${device.largeDesktop}

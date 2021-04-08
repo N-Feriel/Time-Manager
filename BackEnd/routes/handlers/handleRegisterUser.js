@@ -39,7 +39,7 @@ const createUserGM = async (req, res) => {
     });
   } catch (e) {
     res.status(400).json({
-      error: e.message,
+      message: e.message,
     });
   }
 };
@@ -71,7 +71,7 @@ const createUserGD = async (req, res) => {
     });
   } catch (e) {
     res.status(400).json({
-      error: e.message,
+      message: e.message,
     });
   }
 };
@@ -120,8 +120,75 @@ const authUserGM = async (req, res) => {
     });
 };
 
+//Change User password
+
+const changeUserPassword = async (req, res) => {
+  // const schema = Joi.object({
+  //   password: Joi.string().min(6).required(),
+  //   newPassword: Joi.string().min(8).required(),
+  //   confrimNewPassword: Joi.string()
+  //     .min(8)
+  //     .required()
+  //     .valid(Joi.ref("newPassword")),
+  // });
+
+  // const { error } = schema.validate(req.body);
+  // if (error)
+  //   return res.status(400).json({
+  //     status: 400,
+  //     message: error.details[0].message,
+  //   });
+
+  try {
+    const email = req.user.email;
+
+    let user = await UserGM.findOne({ email: email });
+
+    if (!user)
+      return res.status(400).json({
+        status: 400,
+        message: "Invalid email",
+      });
+
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+
+    if (!validPassword)
+      return res.status(400).json({
+        status: 400,
+        message: "Must enter old password.",
+      });
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(req.body.newPassword, salt);
+
+    const savedUser = await user.save();
+
+    if (!savedUser) throw Error("Something went wrong saving the user");
+
+    const token = user.generateAuthToken();
+
+    res
+      .status(201)
+      // .header("x-auth-token", token)
+      // .header("access-control-expose-headers", "x-auth-token")
+      .json({
+        status: 201,
+        token: token,
+        message: "Success, Next time LogIn with your new password",
+      });
+  } catch (e) {
+    res.status(400).json({
+      message: e.message,
+    });
+  }
+};
+
 module.exports = {
   createUserGM,
   createUserGD,
   authUserGM,
+  changeUserPassword,
 };

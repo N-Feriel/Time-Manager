@@ -12,6 +12,8 @@ import {
   receiveEventData,
   receiveEventError,
 } from "../../../store/reducers/Events/actions";
+import Loading from "../../../components/Loading";
+import Error from "../../../components/Error";
 
 function EventsList() {
   const { status, events } = useSelector((state) => state.event);
@@ -28,7 +30,7 @@ function EventsList() {
 
   const [pageNumber, setPageNumber] = useState(0);
 
-  const eventsPerPage = 6;
+  const eventsPerPage = 5;
   const pagesVisited = pageNumber * eventsPerPage;
 
   const history = useHistory();
@@ -69,10 +71,10 @@ function EventsList() {
   }, [currentType]);
 
   if (status === "loading") {
-    return <div>...Loading</div>;
+    return <Loading />;
   }
   if (status === "error") {
-    return <div>...error</div>;
+    return <Error />;
   }
   if (status === "idle") {
     const displayEvents = events
@@ -86,8 +88,6 @@ function EventsList() {
               <div>{event.type}</div>
             </div>
             <div>{moment(event.eventDate).format("MMM Do YY, h:mm a")}</div>
-
-            {/* <span>{event.participants.numberOfParticipants}</span> */}
 
             <div>
               <Button onClick={() => handleEventDetails(event._id)}>
@@ -145,10 +145,10 @@ const Wrapper = styled.div`
   flex-direction: column;
   background: linear-gradient(
     to right bottom,
-    rgba(216, 231, 253, 0.8),
-    rgba(4, 43, 81, 0.2)
+    rgba(175, 238, 238, 1),
+    rgba(205, 92, 92, 0.2)
   );
-  padding: 2rem;
+  padding: 1rem 2rem;
   margin: 2rem;
   width: 90%;
   border-radius: 1rem;
@@ -169,8 +169,8 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 1rem;
-    padding: 0.5rem;
+    margin: 0.5rem;
+    padding: 0.5rem 2rem;
     border-radius: 0.8rem;
   }
 
@@ -178,12 +178,13 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    margin-bottom: 1rem;
   }
 
   & .category {
     background: linear-gradient(
       to right bottom,
-      rgba(172, 135, 135, 0.5),
+      rgba(176, 224, 230, 1),
       rgba(97, 103, 160, 0.5)
     );
     display: flex;
@@ -198,15 +199,15 @@ const Wrapper = styled.div`
   & .category:hover {
     background: linear-gradient(
       to right bottom,
-      rgba(172, 135, 135, 0.9),
-      rgba(209, 58, 58, 0.5)
+      rgba(0, 255, 255, 1),
+      rgba(216, 191, 216, 0.4)
     );
   }
   & .active {
     background: linear-gradient(
       to right bottom,
-      rgba(172, 135, 135, 0.9),
-      rgba(209, 58, 58, 0.5)
+      rgba(0, 255, 255, 1),
+      rgba(205, 92, 92, 0.2)
     );
   }
 
@@ -226,39 +227,6 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  & .paginationBttns {
-    width: 80%;
-    height: 40px;
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
-  }
-
-  & .paginationBttns a {
-    padding: 10px;
-    margin: 8px;
-    border-radius: 5px;
-    border: 1px solid ${themeVars.pink};
-    color: ${themeVars.pink};
-    cursor: pointer;
-  }
-
-  & .paginationBttns a:hover {
-    color: white;
-    background-color: ${themeVars.darkPink};
-  }
-
-  & .paginationActive a {
-    color: white;
-    background-color: ${themeVars.darkPink};
-  }
-
-  & .paginationDisabled a {
-    color: ${themeVars.grey};
-    background-color: ${themeVars.grey};
-  }
 `;
 
 export default EventsList;
