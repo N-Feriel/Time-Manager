@@ -239,7 +239,7 @@ function GDaughterPage() {
             {hasAccess && (
               <Button
                 className={gDData.isActif ? "" : "disabled"}
-                disabled={gDData.isActif == false}
+                disabled={gDData.isActif === false}
                 onClick={handleAddTime}
               >
                 add Time

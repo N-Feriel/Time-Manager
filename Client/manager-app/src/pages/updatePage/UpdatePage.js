@@ -101,73 +101,54 @@ function UpdatePage({
         if (isGDaughter) {
           dispatch(updteGDaughterData(responseBody.data));
           setGDData(responseBody.data);
+
+          if (
+            hasAccess &&
+            initialState.assignTo.assignGM !== values.assignTo.assignGM
+          ) {
+            let notificationData = {
+              name: "New GDaughter is Assign to you",
+              isSeen: false,
+              sendBy: "",
+              eventDate: Date.now(),
+              userId: values.assignTo.assignGM,
+              clientId: values.email,
+            };
+
+            try {
+              let responseNot = await fetch("/api/notification", {
+                method: "POST",
+                body: JSON.stringify(notificationData),
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  "x-auth-token": `${jwt}`,
+                },
+              });
+
+              let responseBodyNotify = await responseNot.json();
+
+              console.log(responseBodyNotify, "notification");
+
+              if (responseBodyNotify.status === 201) {
+                alert("Notification was send to GMother");
+              } else {
+                // redirect user to resend email!!!
+
+                throw responseBodyNotify.message;
+              }
+            } catch (error) {
+              setErrors(error);
+            }
+          }
         } else {
           dispatch(updteGMotherData(responseBody.data));
         }
 
-        //if asssign to the new GMother create a new notification
-        if (initialState.assignTo.assignGM !== values.assignTo.assignGM) {
-          let notificationData = {
-            name: "New GDaughter is Assign to you",
-            isSeen: false,
-            sendBy: "",
-            eventDate: Date.now(),
-            userId: values.assignTo.assignGM,
-            clientId: values.email,
-          };
-
-          try {
-            let responseNot = await fetch("/api/notification", {
-              method: "POST",
-              body: JSON.stringify(notificationData),
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                "x-auth-token": `${jwt}`,
-              },
-            });
-
-            let responseBodyNotify = await responseNot.json();
-
-            if (responseBodyNotify.status === 201) {
-              // content = {
-              //   message: "Notification was send to GMother",
-              //   isSuccess: true,
-              // };
-
-              // setMessageAl([...messageAl, content]);
-
-              alert("Notification was send to GMother");
-            } else {
-              // redirect user to resend email!!!
-
-              throw responseBodyNotify.message;
-            }
-          } catch (error) {
-            setErrors(error);
-          }
-        }
-
-        // // setMessageAl(...messageAl, "the user is updated");
-
-        // content = {
-        //   _id: responseBody.data._id,
-        //   message: "The user is updated",
-        //   isSuccess: true,
-        // };
-        // // messageAl.push(content);
-
-        // setMessageAl([...messageAl, content]);
-
         alert("The user is updated");
         setIsUpdate(!isUpdate);
       } else {
-        // content = {
-        //   _id: responseBody.data._id,
-        //   message: "Fail updating the user",
-        //   isSuccess: false,
-        // };
-        // setMessageAl(...messageAl, content);
+        console.log(responseBody, "res");
         throw responseBody.message;
       }
     } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useHistory } from "react-router";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import FormikControl from "../../../components/formik/FormikControl";
@@ -19,12 +19,12 @@ function Event({ updateValue }) {
 
   const eventTypes = [
     { key: "Select event Type", value: "" },
-    { value: "Meeting", key: "meeting" },
-    { value: "Training", key: "training" },
-    { value: "OneToOne", key: "oneToOne" },
-    { value: "Volunteer", key: "volunteer" },
-    { value: "FaceBook", key: "faceBook" },
-    { value: "Others", key: "others" },
+    { value: "meeting", key: "Meeting" },
+    { value: "training", key: "Training" },
+    { value: "oneToOne", key: "OneToOne" },
+    { value: "volunteer", key: "Volunteer" },
+    { value: "faceBook", key: "FaceBook" },
+    { value: "others", key: "Others" },
   ];
 
   const initialValues = {
@@ -147,7 +147,6 @@ function Event({ updateValue }) {
 
 const Container = styled.div`
   height: 80vh;
-
   display: flex;
   flex-direction: column;
   padding-top: 5rem;

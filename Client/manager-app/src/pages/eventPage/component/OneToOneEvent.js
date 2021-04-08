@@ -1,8 +1,7 @@
 import React, { useContext, useState } from "react";
+import { UserContext } from "../../../components/UserContext";
 
 import styled from "styled-components";
-
-import { UserContext } from "../../../components/UserContext";
 
 import * as Yup from "yup";
 import { Formik, Form } from "formik";

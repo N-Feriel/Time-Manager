@@ -7,7 +7,6 @@ import Error from "../../components/Error";
 import FormikControl from "../../components/formik/FormikControl";
 import Loading from "../../components/Loading";
 import { themeVars } from "../../utils/GlobalStyles";
-import Event from "./component/Event";
 
 function EventPage() {
   const { _id } = useParams();
@@ -23,8 +22,14 @@ function EventPage() {
 
   const getEventDetails = async () => {
     try {
-      const responseHeader = await fetch(`/api/event/${_id}`);
-
+      const responseHeader = await fetch(`/api/event/${_id}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
+        },
+      });
       const response = await responseHeader.json();
 
       if (response.status === 200) {
@@ -62,7 +67,7 @@ function EventPage() {
         throw response.message;
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setErrors(error);
       setStatusEvent("error");
     }
@@ -75,6 +80,7 @@ function EventPage() {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
         },
       });
 

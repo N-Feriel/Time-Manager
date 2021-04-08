@@ -21,7 +21,7 @@ function ArchivesGM() {
           <h2>No GDaugher in archives list</h2>
         ) : (
           <Wrapper>
-            {usersGDArchives.map((userGD, i) => (
+            {usersGDArchives.map((userGD) => (
               <GdSlot key={userGD._id} userGD={userGD} isArchived />
             ))}
           </Wrapper>

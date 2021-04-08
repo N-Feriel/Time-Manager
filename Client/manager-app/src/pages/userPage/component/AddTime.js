@@ -1,12 +1,12 @@
-import React, { useState, useContext } from "react";
+import React from "react";
 import styled from "styled-components";
 
-import { UserContext } from "../../../components/UserContext";
+// import { UserContext } from "../../../components/UserContext";
 
 import RegisterEventPage from "../../eventPage/component/RegisterEventPage";
 
 function AddTime() {
-  const { user } = useContext(UserContext);
+  // const { user } = useContext(UserContext);
 
   const types = [
     { _id: "Vulonteer", name: "Vulonteer", text: "VOLUNTEER" },

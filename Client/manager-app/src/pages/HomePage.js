@@ -68,14 +68,15 @@ function HomePage() {
 
 const Wrapper = styled.div`
   display: flex;
-  height: 60vh;
+  height: 55vh;
+
   background-image: url(${bebePic});
   background-repeat: no-repeat;
   background-size: cover;
   & Button {
-    font-size: 20px;
+    font-size: 16px;
     color: white;
-    width: 150px;
+    width: 120px;
   }
 
   & .details {
@@ -93,6 +94,7 @@ const Wrapper = styled.div`
     color: ${themeVars.violet};
     text-align: center;
     margin: auto;
+    padding-left: 10px;
   }
 
   ${onSmallTabletMediaQuery()} {
@@ -107,6 +109,7 @@ const Wrapper = styled.div`
 
 const Container = styled.div`
   padding: 20px 0 0 0;
+  height: 80vh;
 
   ${onSmallTabletMediaQuery()} {
     margin-bottom: 5rem;
@@ -139,9 +142,10 @@ const Container = styled.div`
     }
   }
   & .info {
-    padding: 5px;
+    padding: 5px 20px;
     display: flex;
     align-items: center;
+    margin-left: auto;
   }
 `;
 

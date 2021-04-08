@@ -12,6 +12,7 @@ import {
 } from "../../../store/reducers/Stat/actions";
 import Loading from "../../../components/Loading";
 import Error from "../../../components/Error";
+import { themeVars } from "../../../utils/GlobalStyles";
 
 function Stats({ setValueList }) {
   const {
@@ -156,7 +157,7 @@ function Stats({ setValueList }) {
   } else if (status === "idle") {
     return (
       <Container>
-        <div>
+        <div style={{ margin: "auto" }}>
           {StatMothers ? (
             <div className="subContainer">
               <h3>GMothers</h3>
@@ -236,14 +237,15 @@ function Stats({ setValueList }) {
                 );
               })}
             </div>
+            <div>
+              <li className="first" onClick={() => setValueList("charts")}>
+                ...Chart
+              </li>
 
-            <li className="first" onClick={() => setValueList("charts")}>
-              ...Chart
-            </li>
-
-            <li className="last" onClick={() => setValueList("details")}>
-              ...More
-            </li>
+              <li className="last" onClick={() => setValueList("details")}>
+                ...More
+              </li>
+            </div>
           </ul>
         )}
       </Container>
@@ -253,14 +255,17 @@ function Stats({ setValueList }) {
 
 const Container = styled.div`
   display: flex;
-  margin: auto 4rem 2rem 4rem;
-  justify-content: space-around;
+  margin: 2rem auto;
+  width: 90%;
+  justify-content: space-between;
+
   background: linear-gradient(
     to left top,
     rgba(246, 196, 196, 0.12),
     rgba(97, 103, 160, 0.512)
   );
   flex-wrap: wrap;
+  align-content: center;
   border-radius: 1.5rem;
 
   & ul {
@@ -270,7 +275,7 @@ const Container = styled.div`
       rgba(255, 255, 255, 0.2)
     );
     margin: 2rem;
-    padding: 2rem;
+    padding: 0 2rem 3rem 2rem;
     text-align: center;
     position: relative;
     display: flex;
@@ -281,6 +286,7 @@ const Container = styled.div`
   & h3 {
     color: rgba(40, 43, 71, 0.8);
     font-weight: 600;
+    margin-top: 0.5rem;
     font-size: 1.2rem;
     text-align: center;
   }
@@ -313,17 +319,19 @@ const Container = styled.div`
   & .first {
     align-self: flex-start;
     color: white;
+    left: 0;
   }
   & .last {
     align-self: flex-end;
-    color: violet;
+    right: 0;
+    color: ${themeVars.violet};
   }
 
   & .last,
   .first {
-    /* align-self: flex-end; */
     position: absolute;
-    bottom: 20px;
+    margin-top: 20px;
+    bottom: 10px;
     background: none;
     /* color: white; */
     width: fit-content;

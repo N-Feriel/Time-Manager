@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 
 import {
@@ -23,18 +23,16 @@ import {
 import GmotherList from "./components/GmotherList";
 import GdaughterList from "./components/GdaughterList";
 import styled from "styled-components";
-import { themeVars } from "../../utils/GlobalStyles";
 import EventsList from "./components/EventsList";
 import Stats from "./components/Stats";
 import SideBar from "../../components/sideBar/SideBar";
-import UserForm from "../../components/form /UserForm";
 import ChartRepresentation from "./components/ChartRepresentation";
 
 function AdminPage() {
   const dispatch = useDispatch();
 
   let history = useHistory();
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
 
   const jwt = localStorage.getItem("token");
   let [valueList, setValueList] = useState("default");

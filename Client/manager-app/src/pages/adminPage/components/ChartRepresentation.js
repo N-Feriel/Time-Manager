@@ -1,10 +1,8 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 
 import { Bar, Doughnut } from "react-chartjs-2";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import _ from "lodash";
-import { useTransition, animated } from "react-spring";
 
 function ChartRepresentation() {
   const {

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-
 import { Link } from "react-router-dom";
 import { themeVars } from "../../utils/GlobalStyles";
 import { RiUserSettingsFill } from "react-icons/ri";
@@ -13,7 +12,6 @@ import { logout } from "../../services/authService";
 
 import logo from "../../assets/logo_1.png";
 import Button from "../button/Button";
-import { flatMap } from "lodash";
 
 function NavBar() {
   const history = useHistory();
@@ -67,7 +65,7 @@ function NavBar() {
           className={`${isOpen ? "fade" : ""}`}
           onClick={() => setIsOpen(!isOpen)}
         >
-          <StyledLink to="/">Archives</StyledLink>
+          <StyledLink to="/user/me/archives">Archives</StyledLink>
         </li>
 
         <li
@@ -142,7 +140,11 @@ const Wrapper = styled.div`
     }
 
     & .nav-links {
-      background: ${themeVars.pink};
+      background: linear-gradient(
+        to right bottom,
+        rgba(246, 196, 196, 1),
+        rgba(249, 231, 159, 0.9)
+      );
       position: fixed;
       top: 0;
       z-index: 5;

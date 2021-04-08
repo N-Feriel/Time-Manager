@@ -71,12 +71,19 @@ function App() {
             component={RegisterEventPage}
           />
 
-          <Route exact path="/infoMother/:_id">
+          {/* <Route exact path="/infoMother/:_id">
             <GMotherPage />
-          </Route>
-          <Route exact path="/infoDaughter/:_id">
+          </Route> */}
+
+          <ProtectedRoute
+            exact
+            authed={true}
+            path="/infoMother/:_id"
+            component={GMotherPage}
+          />
+          {/* <Route exact path="/infoDaughter/:_id">
             <GDaughterPage />
-          </Route>
+          </Route> */}
 
           <ProtectedRoute exact path="/stat" authed={true} component={Stats} />
 
@@ -84,11 +91,11 @@ function App() {
             <EventPage />
           </Route>
 
-          {/* <ProtectedRoute
+          <ProtectedRoute
             exact
             path="/infoDaughter/:_id"
             component={GDaughterPage}
-          /> */}
+          />
 
           <ProtectedRoute
             exact
@@ -142,7 +149,7 @@ const MainDesk = styled.div`
     z-index: 3;
     backdrop-filter: blur(2rem);
     font-family: "Poppins", sans-serif;
-    margin-top: 48px;
+    margin-top: 2rem;
   }
 `;
 

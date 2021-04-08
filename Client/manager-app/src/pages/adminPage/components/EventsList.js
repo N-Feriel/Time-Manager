@@ -148,7 +148,7 @@ const Wrapper = styled.div`
     rgba(175, 238, 238, 1),
     rgba(205, 92, 92, 0.2)
   );
-  padding: 1rem 2rem;
+  padding: 1rem;
   margin: 2rem;
   width: 90%;
   border-radius: 1rem;
