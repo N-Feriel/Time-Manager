@@ -5,10 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "install-client": "cd ../client && npm install",
-    "build": "cd ../client && npm build",
-    "heroku-postbuild": "npm install --prefix ../client && npm run build --prefix ../client"
+    "dev": "nodemon index.js"
   },
   "engines": {
     "node": "15.2.0",
