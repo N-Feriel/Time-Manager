@@ -1,7 +1,6 @@
-import React, { Children } from "react";
+import React from "react";
 
 import Modal from "react-modal";
-import { useHistory } from "react-router";
 import { themeVars } from "../utils/GlobalStyles";
 
 const customStyles = {

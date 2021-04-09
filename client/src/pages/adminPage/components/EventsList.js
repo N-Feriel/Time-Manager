@@ -5,7 +5,6 @@ import { useHistory } from "react-router";
 import ReactPaginate from "react-paginate";
 import styled from "styled-components";
 import Button from "../../../components/button/Button";
-import { themeVars } from "../../../utils/GlobalStyles";
 
 import {
   requestEventData,

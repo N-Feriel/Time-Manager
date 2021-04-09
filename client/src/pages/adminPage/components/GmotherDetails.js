@@ -4,7 +4,7 @@ import { useHistory } from "react-router";
 import styled from "styled-components";
 
 import {
-  removeGMother,
+  // removeGMother,
   updteGMotherData,
 } from "../../../store/reducers/GMother/actions";
 import Button from "../../../components/button/Button";
@@ -18,31 +18,31 @@ function GmotherDetails({ gMother }) {
     history.push(`/infoMother/${_id}`);
   };
 
-  const handleDelete = async (_id) => {
-    alert("Are you sure to delete the user permantely");
-    try {
-      const response = await fetch(`/api/users/infoGMother/${_id}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
+  // const handleDelete = async (_id) => {
+  //   alert("Are you sure to delete the user permantely");
+  //   try {
+  //     const response = await fetch(`/api/users/infoGMother/${_id}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
 
-      const responseBody = await response.json();
+  //     const responseBody = await response.json();
 
-      if (responseBody.status === 200) {
-        dispatch(removeGMother(gMother));
-        console.log("removed");
-        // alert(`Gmother with ${gMother.first_name} ${gMother.last_name}
-        // was deleted form Data Base`)
-      } else {
-        throw responseBody.message;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     if (responseBody.status === 200) {
+  //       dispatch(removeGMother(gMother));
+  //       console.log("removed");
+  //       // alert(`Gmother with ${gMother.first_name} ${gMother.last_name}
+  //       // was deleted form Data Base`)
+  //     } else {
+  //       throw responseBody.message;
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   let url = "/api/users/infoGMother";
   const jwt = localStorage.getItem("token");

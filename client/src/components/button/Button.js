@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import {
-  onSmallPhoneMediaQuery,
-  onSmallTabletMediaQuery,
-} from "../../utils/responsive";
+import { onSmallTabletMediaQuery } from "../../utils/responsive";
 
 const Button = styled.button`
   ${onSmallTabletMediaQuery()} {

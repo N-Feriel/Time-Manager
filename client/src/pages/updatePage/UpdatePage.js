@@ -9,7 +9,7 @@ import { themeVars } from "../../utils/GlobalStyles";
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { UserContext } from "../../components/UserContext";
-import ModalC from "../../components/ModalC";
+// import ModalC from "../../components/ModalC";
 
 import { updteGDaughterData } from "../../store/reducers/GDaughter/actions";
 import { updteGMotherData } from "../../store/reducers/GMother/actions";
@@ -27,7 +27,7 @@ function UpdatePage({
 
   const [errors, setErrors] = useState("");
 
-  const history = useHistory();
+  // const history = useHistory();
   const jwt = localStorage.getItem("token");
 
   const { user } = useContext(UserContext);
@@ -83,7 +83,7 @@ function UpdatePage({
   ];
 
   const onSubmit = async (values) => {
-    let content;
+    // let content;
 
     try {
       const response = await fetch(`${url}/user`, {

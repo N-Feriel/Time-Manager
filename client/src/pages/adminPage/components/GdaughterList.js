@@ -6,7 +6,6 @@ import ReactPaginate from "react-paginate";
 import { updteGDaughterData } from "../../../store/reducers/GDaughter/actions";
 import styled from "styled-components";
 import {
-  removeGDaughter,
   requestGDaughterData,
   receiveGDaughterData,
   receiveGDaughterDataError,
@@ -68,31 +67,31 @@ function GdaughterList() {
     history.push(`/infoDaughter/${_id}`);
   };
 
-  const handleDelete = async (gDaughter) => {
-    const _id = gDaughter._id;
+  // const handleDelete = async (gDaughter) => {
+  //   const _id = gDaughter._id;
 
-    try {
-      const response = await fetch(`${url}/${_id}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
+  //   try {
+  //     const response = await fetch(`${url}/${_id}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
 
-      const responseBody = await response.json();
+  //     const responseBody = await response.json();
 
-      if (response.status === 200) {
-        dispatch(removeGDaughter(gDaughter));
-        // alert(`Gmother with ${gMother.first_name} ${gMother.last_name}
-        // was deleted form Data Base`)
-      } else {
-        throw responseBody.message;
-      }
-    } catch (error) {
-      dispatch(receiveGDaughterDataError(error));
-    }
-  };
+  //     if (response.status === 200) {
+  //       dispatch(removeGDaughter(gDaughter));
+  //       // alert(`Gmother with ${gMother.first_name} ${gMother.last_name}
+  //       // was deleted form Data Base`)
+  //     } else {
+  //       throw responseBody.message;
+  //     }
+  //   } catch (error) {
+  //     dispatch(receiveGDaughterDataError(error));
+  //   }
+  // };
 
   const handleArchive = async (user) => {
     try {

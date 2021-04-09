@@ -1,15 +1,14 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { themeVars } from "../../utils/GlobalStyles";
-import Button from "../button/Button";
 
 import { IoPersonAdd } from "react-icons/io5";
 import { ImStatsBars2 } from "react-icons/im";
-import { CgUserList, CgTimer } from "react-icons/cg";
+import { CgUserList } from "react-icons/cg";
 import { GiMedallist } from "react-icons/gi";
 import { UserContext } from "../UserContext";
 
-function SideBar({ handleNewUser, setValueList, valueList }) {
+function SideBar({ setValueList, valueList }) {
   const { user } = useContext(UserContext);
   return (
     <Container>
@@ -58,11 +57,6 @@ function SideBar({ handleNewUser, setValueList, valueList }) {
           <h4>GMothers List</h4>
         </div>
       </div>
-
-      {/* <div className="resetButton">
-        <CgTimer size="25px" />
-        <h4>Rest Time </h4>
-      </div> */}
     </Container>
   );
 }

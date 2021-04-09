@@ -69,7 +69,7 @@ function RegisterFormD() {
   const url = "/api/register/gDaughter/";
   const [errors, setErrors] = useState([]);
   const history = useHistory();
-  const [sendFail, setSendFail] = useState(false);
+  // const [sendFail, setSendFail] = useState(false);
 
   const jwt = localStorage.getItem("token");
   const { state } = useLocation();
@@ -115,10 +115,10 @@ function RegisterFormD() {
       let responseBodyGM = await responseGM.json();
 
       if (responseBodyGM.status === 201) {
-        setSendFail(false);
+        // setSendFail(false);
         alert(responseBodyGM.message);
       } else {
-        setSendFail(true);
+        // setSendFail(true);
         throw responseBodyGM.message;
         //redirect user to resend email!!!
       }

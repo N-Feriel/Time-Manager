@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-import { themeVars } from "../../../utils/GlobalStyles";
 import Event from "./Event";
 import OneToOneEvent from "./OneToOneEvent";
 

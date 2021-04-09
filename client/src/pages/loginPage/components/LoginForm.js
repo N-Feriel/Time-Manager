@@ -19,7 +19,7 @@ import { themeVars } from "../../../utils/GlobalStyles";
 function LoginForm() {
   const initialValues = { email: "", password: "" };
 
-  const { status, error } = useSelector((state) => state.user);
+  const { error } = useSelector((state) => state.user);
 
   console.log("error", error);
 

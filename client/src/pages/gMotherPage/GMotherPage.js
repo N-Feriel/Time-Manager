@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useLocation, useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import styled from "styled-components";
 import Button from "../../components/button/Button";
 import { themeVars } from "../../utils/GlobalStyles";
@@ -22,7 +22,7 @@ function GMotherPage() {
 
   const history = useHistory();
 
-  const { state } = useLocation();
+  // const { state } = useLocation();
   let url = "/api/users/infoGMother";
 
   const [isUpdate, setIsUpdate] = useState(false);
@@ -150,6 +150,7 @@ function GMotherPage() {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
         },
       });
 

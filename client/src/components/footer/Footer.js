@@ -2,10 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { themeVars } from "../../utils/GlobalStyles";
-import {
-  onDesktopMediaQuery,
-  onSmallTabletMediaQuery,
-} from "../../utils/responsive";
+import { onSmallTabletMediaQuery } from "../../utils/responsive";
 
 function Footer() {
   return (
