@@ -1,14 +1,10 @@
-const express = require('express');
-const auth = require("../middleware/auth")
+const express = require("express");
+const auth = require("../middleware/auth");
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/',auth, (req, res) =>{
+router.get("/", auth, (req, res) => {
+  res.send("Wiki home page");
+});
 
-    res.send('welcome') 
-
-})
-
-
-
-module.exports = router
+module.exports = router;
