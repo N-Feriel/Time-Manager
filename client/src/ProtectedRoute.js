@@ -5,8 +5,13 @@ import { Redirect, Route } from "react-router-dom";
 
 import { getCurrentUser } from "./services/authService";
 
-const ProtectedRoute = ({ ...props }) => {
-  const Component = props.component;
+const ProtectedRoute = ({
+  path,
+  component: Component,
+  authed,
+  render,
+  ...rest
+}) => {
   const isAuthenticated = getCurrentUser(); // your auth from the store / db
 
   const { pathname } = useLocation();
@@ -20,9 +25,9 @@ const ProtectedRoute = ({ ...props }) => {
 
   return (
     <Route
-      {...props}
+      {...rest}
       render={(props) => {
-        if (props.authed) {
+        if (authed) {
           return isAuthenticated && isAuthenticated.isAdmin ? (
             <Component {...props} />
           ) : (

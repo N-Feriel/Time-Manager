@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import React, { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
@@ -30,18 +30,21 @@ import supportmom from "../../assets/support-mom.jpg";
 import { MdNotificationsActive } from "react-icons/md";
 import { BiLogOutCircle } from "react-icons/bi";
 import breastfeeding from "../../assets/breastfeeding.jpg";
+import { UserContext } from "../../components/UserContext";
 
-function UserPage({ user }) {
+function UserPage() {
   const url = "/api/users/GDaugherList";
 
   const dispatch = useDispatch();
+
+  const { user } = useContext(UserContext);
 
   const history = useHistory();
   const [errors, setErrors] = useState("");
 
   const { status, GDUsers } = useSelector((state) => state.user);
 
-  const { pathname, state } = useLocation();
+  // const { pathname, state } = useLocation();
 
   const [isDetails, setIsDetails] = useState(false);
   const [userEvents, setUserEvents] = useState([]);
