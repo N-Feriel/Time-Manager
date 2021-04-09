@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useHistory } from "react-router";
 import styled from "styled-components";
 import * as Yup from "yup";
 import Button from "../../../components/button/Button";
