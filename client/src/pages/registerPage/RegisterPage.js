@@ -5,9 +5,11 @@ import styled from "styled-components";
 import RegisterFormM from "./components/RegisterFormM";
 import RegisterFormD from "./components/RegisterFormD";
 
-function RegisterPage({ isGDaughter }) {
+function RegisterPage(props) {
   return (
-    <Wrapper>{isGDaughter ? <RegisterFormD /> : <RegisterFormM />}</Wrapper>
+    <Wrapper>
+      {props.isGDaughter ? <RegisterFormD /> : <RegisterFormM />}
+    </Wrapper>
   );
 }
 

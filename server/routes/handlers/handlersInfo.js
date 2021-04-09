@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const _ = require("lodash");
-const Joi = require("joi");
 const { UserGD, UserGM } = require("../../models/user");
 
 const getUsersGMInfo = async (req, res) => {

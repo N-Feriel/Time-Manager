@@ -2,9 +2,7 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 const _ = require("lodash");
 const Joi = require("joi");
-
-const mongoose = require("mongoose");
-const { User, validateUser } = require("../../models/user");
+const { User } = require("../../models/user");
 
 const getUsers = async (req, res) => {
   const users = await User.find();

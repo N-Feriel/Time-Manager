@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
@@ -24,11 +24,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import Footer from "./components/footer/Footer";
 import ArchivesGM from "./pages/userPage/component/ArchivesGM";
 import AddTime from "./pages/userPage/component/AddTime";
-import { UserContext } from "./components/UserContext";
 
 function App() {
-  const { user } = useContext(UserContext);
-
   return (
     <BrowserRouter>
       <GlobalStyles />
@@ -61,7 +58,7 @@ function App() {
             exact
             path="/register/gDaughter"
             authed={true}
-            isGDaughter
+            isGDaughter={true}
             component={RegisterPage}
           />
 
@@ -70,6 +67,10 @@ function App() {
             path="/register/event"
             component={RegisterEventPage}
           />
+
+          {/* <Route exact path="/register/event">
+            <RegisterEventPage />
+          </Route> */}
 
           <ProtectedRoute
             exact
@@ -80,9 +81,7 @@ function App() {
 
           <ProtectedRoute exact path="/stat" authed={true} component={Stats} />
 
-          <Route exact path="/event/:_id">
-            <EventPage />
-          </Route>
+          <ProtectedRoute exact path="/event/:_id" component={EventPage} />
 
           <ProtectedRoute
             exact
@@ -90,12 +89,7 @@ function App() {
             component={GDaughterPage}
           />
 
-          <ProtectedRoute
-            exact
-            path="/user/me"
-            user={user}
-            component={UserPage}
-          />
+          <ProtectedRoute exact path="/user/me" component={UserPage} />
 
           <ProtectedRoute
             exact

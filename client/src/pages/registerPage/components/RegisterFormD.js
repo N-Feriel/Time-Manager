@@ -85,8 +85,9 @@ function RegisterFormD() {
     );
 
     listGM = assignData.map((GM) => ({
-      key: `${GM.first_name} ${GM.last_name}`,
-      value: `${GM._id}`,
+      value: `${GM.first_name} ${GM.last_name}`,
+      key: `${GM._id}`,
+      id: `${GM._id}`,
     }));
   }
 

@@ -10,6 +10,7 @@ const ProtectedRoute = ({
   component: Component,
   authed,
   render,
+  props,
   ...rest
 }) => {
   const isAuthenticated = getCurrentUser(); // your auth from the store / db
@@ -28,19 +29,36 @@ const ProtectedRoute = ({
       {...rest}
       render={(props) => {
         if (authed) {
+          console.log(rest);
           return isAuthenticated && isAuthenticated.isAdmin ? (
-            <Component {...props} />
+            Component ? (
+              <Component {...props} {...rest} />
+            ) : (
+              render(props)
+            )
           ) : (
             <Redirect to={location} />
           );
         }
 
         return isAuthenticated ? (
-          <Component {...props} />
+          Component ? (
+            <Component {...props} {...rest} />
+          ) : (
+            render(props)
+          )
         ) : (
           <Redirect to={location} />
         );
       }}
+
+      // render=(props=>{
+      //   if(authed){
+      //     if(isAuthenticated && isAuthenticated.isAdmin){
+      //       return Component ? <Component {...}
+      //     }
+      //   }
+      // })
     />
   );
 };

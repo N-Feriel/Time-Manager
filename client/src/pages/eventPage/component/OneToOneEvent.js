@@ -23,7 +23,7 @@ function OneToOneEvent({ userGD, timeSubmitedCallback }) {
     type: "OneToOne",
     typeOneToOne: "DEFAULT",
   };
-
+  const jwt = localStorage.getItem("token");
   const [errors, setErrors] = useState("");
 
   const validationSchema = Yup.object({
@@ -48,10 +48,12 @@ function OneToOneEvent({ userGD, timeSubmitedCallback }) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
         },
       });
 
       const responseBody = await response.json();
+      console.log(responseBody);
 
       if (responseBody.status === 201) {
         timeSubmitedCallback();

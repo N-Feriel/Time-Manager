@@ -9,11 +9,15 @@ import TextError from "../../../components/formik/TextError";
 import { UserContext } from "../../../components/UserContext";
 import styled from "styled-components";
 import { themeVars } from "../../../utils/GlobalStyles";
+import ModalC from "../../../components/ModalC";
 
 function Event({ updateValue }) {
   const url = "/api/event";
   const [errors, setErrors] = useState("");
   const history = useHistory();
+
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [messageAl, setMessageAl] = useState("");
 
   const { user } = useContext(UserContext);
 
@@ -26,6 +30,8 @@ function Event({ updateValue }) {
     { value: "faceBook", key: "FaceBook" },
     { value: "others", key: "Others" },
   ];
+
+  const jwt = localStorage.getItem("token");
 
   const initialValues = {
     name: "",
@@ -60,13 +66,15 @@ function Event({ updateValue }) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "x-auth-token": `${jwt}`,
         },
       });
 
       const responseBody = await response.json();
 
       if (responseBody.status === 201) {
-        history.push("/user/me");
+        setMessageAl(`Success - The event was submited `);
+        setIsOpen(true);
       } else {
         // console.log("resonpse", responseBody);
         throw responseBody.message;
@@ -76,9 +84,21 @@ function Event({ updateValue }) {
       console.log(errors, "erros");
     }
   };
+  function closeModal() {
+    setIsOpen(false);
+    history.push("/user/me");
+  }
 
   return (
     <Container>
+      <ModalC
+        setIsOpen={setIsOpen}
+        closeModal={closeModal}
+        modalIsOpen={modalIsOpen}
+      >
+        <h4>{messageAl}</h4>
+        <Button onClick={closeModal}>close</Button>
+      </ModalC>
       {errors && <TextError>{errors}</TextError>}
       <h2> Add new Event</h2>
       <Formik
