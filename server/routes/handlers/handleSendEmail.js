@@ -7,8 +7,8 @@ var transport = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
   port: 25,
   auth: {
-    user: "7516eeeb0c7db1",
-    pass: "2c3c66074846a6",
+    user: USEREMAIL,
+    pass: PASS,
   },
   tls: {
     rejectUnauthorized: false,
@@ -43,7 +43,7 @@ const firstMail = async (req, res) => {
 
   transport.verify(function (error, success) {
     if (error) {
-      console.log(error);
+      throw error;
     } else {
       console.log("Server is ready to take our messages");
     }
@@ -58,8 +58,8 @@ const firstMail = async (req, res) => {
         message: error.message,
       });
     }
-    console.log("Message sent: %s", info.messageId);
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // console.log("Message sent: %s", info.messageId);
+    // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
     if (info.messageId)
       return res.status(201).json({
@@ -74,9 +74,8 @@ const getNewGDaughterMail = async (req, res) => {
 
   console.log(assignTo.assignGM, "req");
 
-  const userInfo = await UserGM.findById(assignTo.assignGM);
+  const userInfo = await UserGM.findById(assignTo.assignGM).select("-password");
 
-  console.log(userInfo, "info");
   if (!userInfo)
     return res.status(404).json({
       status: 404,
@@ -127,13 +126,13 @@ const getNewGDaughterMail = async (req, res) => {
         message: error.message,
       });
     }
-    console.log("Message sent: %s", info.messageId);
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // console.log("Message sent: %s", info.messageId);
+    // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
     if (info.messageId)
       return res.status(201).json({
         status: 201,
-        message: `email was send to client with the given ${req.body.email} address`,
+        message: `email was send to client with the given ${userInfo.email} address`,
       });
   });
 };
