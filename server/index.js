@@ -10,6 +10,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const connectDB = require("./startup/db");
 
+require("dotenv").config();
 const register = require("./routes/register");
 const types = require("./routes/types");
 const users = require("./routes/users");
@@ -22,21 +23,23 @@ const notification = require("./routes/notifications");
 app.use(express.json());
 app.use(morgan("tiny"));
 
-app.use(cors({ origin: "https://new-time-manage.netlify.app" }));
+const { URL_FRONT_END } = process.env;
+
+app.use(cors({ origin: URL_FRONT_END }));
 // app.use(morgan('combined', { stream: logger.stream }));
 
 //Use mongoose to connect to DataBase
 connectDB();
-// winston.add(new winston.transports.File({ filename: 'logfile.log' }));
-// winston.add(new winston.transports.MongoDB({db:`${MONGO_URI}` }));
+// winston.add(new winston.transports.File({ filename: "logfile.log" }));
+// winston.add(new winston.transports.MongoDB({ db: `${MONGO_URI}` }));
 
 // winston.exceptions.handle(
-//     new winston.transports.File({ filename: 'exceptions.log' })
+//   new winston.transports.File({ filename: "exceptions.log" })
 // );
 
-// process.on('unhandledRejection', (ex)=>{
-//     throw ex
-// })
+// process.on("unhandledRejection", (ex) => {
+//   throw ex;
+// });
 
 app.use("/api/types", types);
 app.use("/api/register", register);
