@@ -15,8 +15,6 @@ function GdSlot({
 }) {
   const history = useHistory();
 
-  const { REACT_APP_API_URL } = process.env;
-
   const { pathname } = useLocation();
 
   // const [isTimeSubmited, setIsTimeSubmited] = useState(false);
