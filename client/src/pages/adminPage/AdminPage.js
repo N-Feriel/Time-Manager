@@ -36,14 +36,17 @@ function AdminPage() {
 
   const jwt = localStorage.getItem("token");
   let [valueList, setValueList] = useState("default");
+  const { REACT_APP_API_URL } = process.env;
 
-  const url = "/api/users/";
+  const url = `${REACT_APP_API_URL}/api`;
+
+  console.log(url);
 
   const getGMothersData = async () => {
     dispatch(requestGMotherData());
 
     try {
-      const response = await fetch(`${url}infoGMother`, {
+      const response = await fetch(`${url}/users/infoGMother`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -67,7 +70,7 @@ function AdminPage() {
     dispatch(requestGDaughterData());
 
     try {
-      const response = await fetch(`${url}infoGDaughter`, {
+      const response = await fetch(`${url}/users/infoGDaughter`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -91,7 +94,7 @@ function AdminPage() {
   const getEventsData = async () => {
     dispatch(requestEventData());
 
-    fetch("/api/event")
+    fetch(`${url}/event`)
       .then((res) => res.json())
       .then((json) => {
         dispatch(receiveEventData(json.data));

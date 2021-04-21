@@ -33,7 +33,8 @@ import breastfeeding from "../../assets/breastfeeding.jpg";
 import { UserContext } from "../../components/UserContext";
 
 function UserPage() {
-  const url = "/api/users/GDaugherList";
+  const { REACT_APP_API_URL } = process.env;
+  const url = `${REACT_APP_API_URL}/api/users/GDaugherList`;
 
   const dispatch = useDispatch();
 
@@ -108,7 +109,7 @@ function UserPage() {
   const getNotifications = async () => {
     try {
       const response = await fetch(
-        "/api/notification/totalNotifications/user",
+        `${REACT_APP_API_URL}/api/notification/totalNotifications/user`,
         {
           method: "GET",
           headers: {
@@ -161,7 +162,7 @@ function UserPage() {
 
   const getUsertime = async () => {
     try {
-      const url = `/api/event/totalTime/${user._id}`;
+      const url = `${REACT_APP_API_URL}/api/event/totalTime/${user._id}`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -187,15 +188,18 @@ function UserPage() {
   const handleChangePassword = async (values) => {
     setErrors("");
     try {
-      let response = await fetch("/api/auth/login/changePassword", {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "x-auth-token": `${jwt}`,
-        },
-      });
+      let response = await fetch(
+        `${REACT_APP_API_URL}/api/auth/login/changePassword`,
+        {
+          method: "POST",
+          body: JSON.stringify(values),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "x-auth-token": `${jwt}`,
+          },
+        }
+      );
 
       const responseBody = await response.json();
 

@@ -66,7 +66,9 @@ const validationSchema = Yup.object({
 });
 
 function RegisterFormD() {
-  const url = "/api/register/gDaughter/";
+  const { REACT_APP_API_URL } = process.env;
+
+  const url = `${REACT_APP_API_URL}/api/register/gDaughter/`;
   const [errors, setErrors] = useState([]);
   const history = useHistory();
   // const [sendFail, setSendFail] = useState(false);
@@ -102,7 +104,7 @@ function RegisterFormD() {
     // console.log(mailGM, "mailG");
 
     try {
-      let responseGM = await fetch("/api/send/assignto", {
+      let responseGM = await fetch(`${REACT_APP_API_URL}/api/send/assignto`, {
         method: "POST",
         body: JSON.stringify(mailGM),
         headers: {
@@ -138,7 +140,7 @@ function RegisterFormD() {
     };
 
     try {
-      let responseNot = await fetch("/api/notification", {
+      let responseNot = await fetch(`${REACT_APP_API_URL}/api/notification`, {
         method: "POST",
         body: JSON.stringify(notificationData),
         headers: {

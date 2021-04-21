@@ -12,7 +12,8 @@ import { themeVars } from "../../../utils/GlobalStyles";
 import ModalC from "../../../components/ModalC";
 
 function Event({ updateValue }) {
-  const url = "/api/event";
+  const { REACT_APP_API_URL } = process.env;
+  const url = `${REACT_APP_API_URL}/api/event`;
   const [errors, setErrors] = useState("");
   const history = useHistory();
 

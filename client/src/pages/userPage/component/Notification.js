@@ -4,7 +4,7 @@ import { GiCheckMark } from "react-icons/gi";
 import { AiOutlineClose } from "react-icons/ai";
 
 function Notification({ notification, deleteNotifcation }) {
-  console.log("notification", notification);
+  const { REACT_APP_API_URL } = process.env;
 
   const jwt = localStorage.getItem("token");
 
@@ -24,26 +24,32 @@ function Notification({ notification, deleteNotifcation }) {
         };
 
     try {
-      const response = await fetch("/api/users/infoGDaughter/user", {
-        method: "PATCH",
-        body: JSON.stringify(values),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "x-auth-token": `${jwt}`,
-        },
-      });
-      const responseBody = await response.json();
-      if (responseBody.status === 201) {
-        const responseN = await fetch(`/api/notification/${notification._id}`, {
-          method: "DELETE",
+      const response = await fetch(
+        `${REACT_APP_API_URL}/api/users/infoGDaughter/user`,
+        {
+          method: "PATCH",
           body: JSON.stringify(values),
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
             "x-auth-token": `${jwt}`,
           },
-        });
+        }
+      );
+      const responseBody = await response.json();
+      if (responseBody.status === 201) {
+        const responseN = await fetch(
+          `${REACT_APP_API_URL}/api/notification/${notification._id}`,
+          {
+            method: "DELETE",
+            body: JSON.stringify(values),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "x-auth-token": `${jwt}`,
+            },
+          }
+        );
 
         const responseBodyNotify = await responseN.json();
 

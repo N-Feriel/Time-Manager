@@ -29,7 +29,6 @@ const ProtectedRoute = ({
       {...rest}
       render={(props) => {
         if (authed) {
-          console.log(rest);
           return isAuthenticated && isAuthenticated.isAdmin ? (
             Component ? (
               <Component {...props} {...rest} />

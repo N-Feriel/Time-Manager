@@ -17,6 +17,7 @@ import Loading from "../../../components/Loading";
 
 function GdaughterList() {
   const { status, gDaughters } = useSelector((state) => state.gDaughter);
+  const { REACT_APP_API_URL } = process.env;
 
   const [selectedType, setSelectedType] = useState("toAssign");
 
@@ -29,7 +30,7 @@ function GdaughterList() {
 
     try {
       const response = await fetch(
-        `api/users/status/GDaughter/${selectedType}`,
+        `${REACT_APP_API_URL}/api/users/status/GDaughter/${selectedType}`,
         {
           method: "GET",
           headers: {
@@ -55,7 +56,7 @@ function GdaughterList() {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  let url = "/api/users/infoGDaughter";
+  let url = `${REACT_APP_API_URL}/api/users/infoGDaughter`;
   const jwt = localStorage.getItem("token");
 
   const [pageNumber, setPageNumber] = useState(0);

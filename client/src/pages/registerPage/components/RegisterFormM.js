@@ -69,9 +69,10 @@ const validationSchema = Yup.object({
 });
 
 function RegisterFormM() {
+  const { REACT_APP_API_URL } = process.env;
   const [errors, setErrors] = useState("");
   const history = useHistory();
-  const url = "/api/register/gMother/";
+  const url = `${REACT_APP_API_URL}/api/register/gMother/`;
 
   const jwt = localStorage.getItem("token");
 

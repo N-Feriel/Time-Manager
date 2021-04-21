@@ -18,6 +18,7 @@ import TextError from "../../components/formik/TextError";
 function GDaughterPage() {
   const { _id } = useParams();
 
+  const { REACT_APP_API_URL } = process.env;
   const [statusGDData, setStatusGDData] = useState("loading");
   const [addTime, setAddTime] = useState(false);
 
@@ -49,14 +50,17 @@ function GDaughterPage() {
 
   const getUserData = async () => {
     try {
-      const response = await fetch(`/api/users/infoGDaughter/${_id}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Accept-Charset": "utf-8",
-          "x-auth-token": `${jwt}`,
-        },
-      });
+      const response = await fetch(
+        `${REACT_APP_API_URL}/api/users/infoGDaughter/${_id}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Accept-Charset": "utf-8",
+            "x-auth-token": `${jwt}`,
+          },
+        }
+      );
 
       const responseBody = await response.json();
 
@@ -74,7 +78,7 @@ function GDaughterPage() {
 
   const getUsertime = async (gdId) => {
     try {
-      const url = `/api/event/oneToOne/totalTime/${gdId}`;
+      const url = `${REACT_APP_API_URL}/api/event/oneToOne/totalTime/${gdId}`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -120,7 +124,7 @@ function GDaughterPage() {
   // }));
 
   const handleArchive = async () => {
-    const url = "/api/users/infoGDaughter/";
+    const url = `${REACT_APP_API_URL}/api/users/infoGDaughter`;
 
     try {
       const response = await fetch(`${url}/user`, {

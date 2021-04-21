@@ -30,7 +30,9 @@ function OneToOneEvent({ userGD, timeSubmitedCallback }) {
     time: Yup.number().required("Required").positive("Must be Positive Number"),
   });
 
-  const url = "/api/event";
+  const { REACT_APP_API_URL } = process.env;
+
+  const url = `${REACT_APP_API_URL}/api/event`;
 
   const communicationTypes = [
     { value: "DEFAULT", key: "DEFAULT" },

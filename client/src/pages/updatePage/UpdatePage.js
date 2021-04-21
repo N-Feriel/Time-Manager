@@ -25,6 +25,8 @@ function UpdatePage({
 
   const dispatch = useDispatch();
 
+  const { REACT_APP_API_URL } = process.env;
+
   const [errors, setErrors] = useState("");
 
   // const history = useHistory();
@@ -45,8 +47,8 @@ function UpdatePage({
   ];
 
   !isGDaughter
-    ? (url = "/api/users/infoGMother/")
-    : (url = "/api/users/infoGDaughter/");
+    ? (url = `${REACT_APP_API_URL}/api/users/infoGMother`)
+    : (url = `${REACT_APP_API_URL}/api/users/infoGDaughter`);
 
   // const { pathname, state } = useLocation();
 
@@ -116,19 +118,20 @@ function UpdatePage({
             };
 
             try {
-              let responseNot = await fetch("/api/notification", {
-                method: "POST",
-                body: JSON.stringify(notificationData),
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  "x-auth-token": `${jwt}`,
-                },
-              });
+              let responseNot = await fetch(
+                `${REACT_APP_API_URL}/api/notification`,
+                {
+                  method: "POST",
+                  body: JSON.stringify(notificationData),
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    "x-auth-token": `${jwt}`,
+                  },
+                }
+              );
 
               let responseBodyNotify = await responseNot.json();
-
-              console.log(responseBodyNotify, "notification");
 
               if (responseBodyNotify.status === 201) {
                 alert("Notification was send to GMother");

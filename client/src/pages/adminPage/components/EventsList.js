@@ -18,6 +18,7 @@ function EventsList() {
   const { status, events } = useSelector((state) => state.event);
 
   const { stats } = useSelector((state) => state.stat);
+  const { REACT_APP_API_URL } = process.env;
 
   var moment = require("moment");
 
@@ -41,7 +42,7 @@ function EventsList() {
   const getFilteredEvent = async (type) => {
     dispatch(requestEventData());
     try {
-      const url = `/api/event/events/${type}`;
+      const url = `${REACT_APP_API_URL}/api/event/events/${type}`;
 
       const response = await fetch(url, {
         method: "GET",

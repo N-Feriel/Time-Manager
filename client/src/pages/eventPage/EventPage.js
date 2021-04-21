@@ -14,6 +14,9 @@ function EventPage() {
   const [eventDetails, setEventsData] = useState([]);
   const [errors, setErrors] = useState("");
   const [isUpdate, setUpdate] = useState(false);
+  const { REACT_APP_API_URL } = process.env;
+
+  const url = `${REACT_APP_API_URL}/api/event`;
 
   const history = useHistory();
 
@@ -22,7 +25,7 @@ function EventPage() {
 
   const getEventDetails = async () => {
     try {
-      const responseHeader = await fetch(`/api/event/${_id}`, {
+      const responseHeader = await fetch(`${url}/${_id}`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -47,7 +50,7 @@ function EventPage() {
 
   const onSubmit = async (values) => {
     try {
-      const responseHeader = await fetch(`/api/event/${_id}`, {
+      const responseHeader = await fetch(`${url}/${_id}`, {
         method: "PATCH",
         body: JSON.stringify(values),
         headers: {
@@ -75,7 +78,7 @@ function EventPage() {
 
   const handleDelete = async (_id) => {
     try {
-      const responseHeader = await fetch(`/api/event/${_id}`, {
+      const responseHeader = await fetch(`${url}/${_id}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",

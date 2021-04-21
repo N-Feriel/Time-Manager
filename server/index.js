@@ -7,6 +7,7 @@ var bodyParser = require("body-parser");
 const app = express();
 
 const morgan = require("morgan");
+const cors = require("cors");
 const connectDB = require("./startup/db");
 
 const register = require("./routes/register");
@@ -19,6 +20,9 @@ const mailSend = require("./routes/mailSend");
 const notification = require("./routes/notifications");
 
 app.use(express.json());
+app.use(morgan("tiny"));
+
+app.use(cors());
 // app.use(morgan('combined', { stream: logger.stream }));
 
 //Use mongoose to connect to DataBase

@@ -15,6 +15,7 @@ import Loading from "../../components/Loading";
 function GMotherPage() {
   const { _id } = useParams();
   const jwt = localStorage.getItem("token");
+  const { REACT_APP_API_URL } = process.env;
 
   const [statusGMData, setStatusGMData] = useState("loading");
 
@@ -23,7 +24,7 @@ function GMotherPage() {
   const history = useHistory();
 
   // const { state } = useLocation();
-  let url = "/api/users/infoGMother";
+  let url = `${REACT_APP_API_URL}/api/users/infoGMother`;
 
   const [isUpdate, setIsUpdate] = useState(false);
   const [gMData, setGMData] = useState([]);
@@ -52,7 +53,7 @@ function GMotherPage() {
 
   const getUsertime = async () => {
     try {
-      const url = `/api/event/totalTime/${_id}`;
+      const url = `${REACT_APP_API_URL}/api/event/totalTime/${_id}`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -111,7 +112,7 @@ function GMotherPage() {
   }
 
   const getGDAssigned = async () => {
-    url = `/api/users/GDaugherList/${_id}`;
+    url = `${REACT_APP_API_URL}/api/users/GDaugherList/${_id}`;
 
     try {
       const response = await fetch(url, {

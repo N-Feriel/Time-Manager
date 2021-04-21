@@ -23,6 +23,7 @@ function Stats({ setValueList }) {
     statOneToOne,
   } = useSelector((state) => state.stat);
 
+  const { REACT_APP_API_URL } = process.env;
   const jwt = localStorage.getItem("token");
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +32,7 @@ function Stats({ setValueList }) {
     dispatch(requestStatData());
 
     try {
-      const url = `/api/event/stat/totalTime/`;
+      const url = `${REACT_APP_API_URL}/api/event/stat/totalTime/`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -59,7 +60,7 @@ function Stats({ setValueList }) {
     dispatch(requestStatData());
 
     try {
-      const url = `/api/users/stat/gMother`;
+      const url = `${REACT_APP_API_URL}/api/users/stat/gMother`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -87,7 +88,7 @@ function Stats({ setValueList }) {
     dispatch(requestStatData());
 
     try {
-      const url = `/api/event/oneToOne/totalTime`;
+      const url = `${REACT_APP_API_URL}/api/event/oneToOne/totalTime`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -119,7 +120,7 @@ function Stats({ setValueList }) {
     dispatch(requestStatData());
 
     try {
-      const url = `/api/users/stat/gDaughter`;
+      const url = `${REACT_APP_API_URL}/api/users/stat/gDaughter`;
 
       const response = await fetch(url, {
         method: "GET",
